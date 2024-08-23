@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { SignInData } from '@/interfaces/signin.interface';
+import { SignInData } from '@/interfaces/auth.interface';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { signInValidationSchema } from '@/validation/signin.validation';
 import {
