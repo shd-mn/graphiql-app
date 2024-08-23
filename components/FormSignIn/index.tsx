@@ -18,6 +18,8 @@ import {
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from 'next/navigation';
+import { signInWithEmailAndPassword } from '@firebase/auth';
+import { auth } from '@/firebase';
 
 function FormSignIn() {
   const router = useRouter();
@@ -30,8 +32,13 @@ function FormSignIn() {
     resolver: yupResolver(signInValidationSchema),
   });
 
-  const onFormSubmit = () => {
-    router.push('/');
+  const onFormSubmit = async (data: SignInData) => {
+    try {
+      await signInWithEmailAndPassword(auth, data.login, data.password);
+      router.push('/');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const [showPassword, setShowPassword] = React.useState(false);
