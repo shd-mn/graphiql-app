@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { SignInData } from '@/interfaces/signin.interface';
+import { SignUpData } from '@/interfaces/signin.interface';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { signInValidationSchema } from '@/validation/signin.validation';
+
 import {
   Button,
   FormControl,
@@ -18,16 +18,17 @@ import {
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from 'next/navigation';
+import { signUpValidationSchema } from '@/validation/signup.validation';
 
-function FormSignIn() {
+function FormSignUp() {
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitted },
-  } = useForm<SignInData>({
-    resolver: yupResolver(signInValidationSchema),
+  } = useForm<SignUpData>({
+    resolver: yupResolver(signUpValidationSchema),
   });
 
   const onFormSubmit = () => {
@@ -74,15 +75,38 @@ function FormSignIn() {
         />
         <FormHelperText>{errors.password ? errors.password.message : ''}</FormHelperText>
       </FormControl>
+      <FormControl variant="outlined" error={!!errors.confirmPassword}>
+        <InputLabel htmlFor="confirm-password">Confirm password</InputLabel>
+        <OutlinedInput
+          id="confirm-password"
+          type={showPassword ? 'text' : 'password'}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Confirm password"
+          autoComplete="current-password"
+          {...register('confirmPassword')}
+        />
+        <FormHelperText>{errors.confirmPassword ? errors.confirmPassword.message : ''}</FormHelperText>
+      </FormControl>
       <Button type="submit" variant="contained" disabled={!isValid && isSubmitted}>
-        Sign in
+        Sign up
       </Button>
       <div className="flex flex-col items-center">
-        <p className="m-0">If you don&apos;t have an account, please</p>
-        <Button href="/signup">Sign up</Button>
+        <p className="m-0">If you already have an account, please</p>
+        <Button href="/login">Sign in</Button>
       </div>
     </form>
   );
 }
 
-export default FormSignIn;
+export default FormSignUp;
