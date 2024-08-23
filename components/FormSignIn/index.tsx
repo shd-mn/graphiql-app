@@ -6,6 +6,7 @@ import { SignInData } from '@/interfaces/signin.interface';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { validationSchema } from '@/validation';
 import {
+  Button,
   FormControl,
   IconButton,
   InputAdornment,
@@ -16,8 +17,11 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useRouter } from 'next/navigation';
 
 function FormSignIn() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -26,8 +30,8 @@ function FormSignIn() {
     resolver: yupResolver(validationSchema),
   });
 
-  const onFormSubmit = (data: SignInData) => {
-    console.log(data);
+  const onFormSubmit = () => {
+    router.push('/');
   };
 
   const [showPassword, setShowPassword] = React.useState(false);
@@ -39,45 +43,44 @@ function FormSignIn() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)}>
-      <div>
-        <TextField
-          error={!!errors.login}
-          required
-          id="login"
-          label="Login"
-          type="email"
-          helperText={errors.login ? errors.login.message : ''}
-          {...register('login')}
+    <form onSubmit={handleSubmit(onFormSubmit)} className="flex w-full max-w-sm flex-col gap-4 p-3">
+      <TextField
+        error={!!errors.login}
+        id="login"
+        label="Login"
+        helperText={errors.login ? errors.login.message : ''}
+        {...register('login')}
+      />
+      <FormControl variant="outlined" error={!!errors.password}>
+        <InputLabel htmlFor="password">Password</InputLabel>
+        <OutlinedInput
+          id="password"
+          type={showPassword ? 'text' : 'password'}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Password"
+          autoComplete="current-password"
+          {...register('password')}
         />
-        <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" error={!!errors.password}>
-          <InputLabel htmlFor="password">Password</InputLabel>
-          <OutlinedInput
-            id="password"
-            type={showPassword ? 'text' : 'password'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
-            autoComplete="current-password"
-            {...register('password')}
-          />
-          <FormHelperText>{errors.password ? errors.password.message : ''}</FormHelperText>
-        </FormControl>
-      </div>
-      <button type="submit" disabled={!isValid && isSubmitted}>
+        <FormHelperText>{errors.password ? errors.password.message : ''}</FormHelperText>
+      </FormControl>
+      <Button type="submit" variant="contained" disabled={!isValid && isSubmitted}>
         Sign in
-      </button>
-      <p>If you do not have an account, please Sign up</p>
+      </Button>
+      <div className="flex flex-col items-center">
+        <p className="m-0">If you don&apos;t have an account, please</p>
+        <Button href="/signup">Sign up</Button>
+      </div>
     </form>
   );
 }
