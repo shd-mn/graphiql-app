@@ -20,6 +20,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth } from '@/firebase';
+import { routes } from '@/constants/routes';
 
 function FormSignIn() {
   const router = useRouter();
@@ -35,7 +36,7 @@ function FormSignIn() {
   const onFormSubmit = async (data: SignInData) => {
     try {
       await signInWithEmailAndPassword(auth, data.login, data.password);
-      router.push('/');
+      router.push(routes.home);
     } catch (error) {
       console.log(error);
     }
@@ -86,7 +87,7 @@ function FormSignIn() {
       </Button>
       <div className="flex flex-col items-center">
         <p className="m-0">If you don&apos;t have an account, please</p>
-        <Button href="/signup">Sign up</Button>
+        <Button href={routes.signup}>Sign up</Button>
       </div>
     </form>
   );

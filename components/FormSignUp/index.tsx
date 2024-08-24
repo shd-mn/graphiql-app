@@ -21,6 +21,7 @@ import { useRouter } from 'next/navigation';
 import { signUpValidationSchema } from '@/validation/signup.validation';
 import { createUserWithEmailAndPassword, updateProfile } from '@firebase/auth';
 import { auth } from '@/firebase';
+import { routes } from '@/constants/routes';
 
 function FormSignUp() {
   const router = useRouter();
@@ -37,7 +38,7 @@ function FormSignUp() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.login, data.password);
       await updateProfile(userCredential.user, { displayName: data.name });
-      router.push('/');
+      router.push(routes.home);
     } catch (error) {
       console.log(error);
     }
@@ -118,7 +119,7 @@ function FormSignUp() {
       </Button>
       <div className="flex flex-col items-center">
         <p className="m-0">If you already have an account, please</p>
-        <Button href="/login">Sign in</Button>
+        <Button href={routes.login}>Sign in</Button>
       </div>
     </form>
   );
