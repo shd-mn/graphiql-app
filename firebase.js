@@ -14,5 +14,39 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const logout = () => signOut(auth);
+let timeout;
+
+function diff(expirationTime) {
+  const exp = new Date(expirationTime).getTime();
+  return exp - Date.now();
+}
+
+function timeoutCallback() {
+  auth.currentUser?.getIdTokenResult();
+}
+
+function checkToken(idTokenResult) {
+  clearTimeout(timeout);
+  if (idTokenResult.authTime !== idTokenResult.issuedAtTime) {
+    void logout().then(() => (window.location.href = '/'));
+  } else {
+    timeout = setTimeout(timeoutCallback, diff(idTokenResult.expirationTime));
+  }
+}
+
+function visibilityCallback() {
+  if (document.visibilityState === 'visible') {
+    auth.currentUser?.getIdTokenResult().then(checkToken);
+  }
+}
+
+auth.onIdTokenChanged((user) => {
+  user?.getIdTokenResult().then(checkToken);
+});
+
+if (typeof window !== 'undefined') {
+  window.removeEventListener('visibilitychange', visibilityCallback);
+  window.addEventListener('visibilitychange', visibilityCallback);
+}
 
 export { auth, logout };

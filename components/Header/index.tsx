@@ -1,4 +1,5 @@
 'use client';
+
 import Link from 'next/link';
 import { routes } from '@/constants/routes';
 import { useAuthState } from 'react-firebase-hooks/auth';

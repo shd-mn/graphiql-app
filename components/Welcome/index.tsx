@@ -7,7 +7,6 @@ import { routes } from '@/constants/routes';
 
 const Welcome = () => {
   const [user] = useAuthState(auth);
-  console.log(user);
 
   return (
     <div>
@@ -26,7 +25,7 @@ const Welcome = () => {
           </div>
         ) : (
           <div>
-            <h2 className="text-center">Welcome Back, {user.displayName}</h2>
+            <h2 className="text-center">Welcome Back, {user.displayName}!</h2>
             <div className="flex gap-2">
               <Button href={routes.restfull} color="inherit" variant="outlined">
                 REST Client
