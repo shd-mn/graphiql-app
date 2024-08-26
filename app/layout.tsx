@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
+import { StoreProvider } from './StoreProvider';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import { StyledEngineProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { StyledEngineProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -22,14 +23,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        <CssBaseline />
-        <AppRouterCacheProvider>
-          <StyledEngineProvider injectFirst>
-            <Header />
-            {children}
-            <Footer />
-          </StyledEngineProvider>
-        </AppRouterCacheProvider>
+        <StoreProvider>
+          <CssBaseline />
+          <AppRouterCacheProvider options={{ key: 'css' }}>
+            <StyledEngineProvider injectFirst>
+              <Header />
+              {children}
+              <Footer />
+            </StyledEngineProvider>
+          </AppRouterCacheProvider>
+        </StoreProvider>
       </body>
     </html>
   );
