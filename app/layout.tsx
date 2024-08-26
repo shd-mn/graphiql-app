@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import './globals.css';
+import PrivateRoute from '@/components/PrivateRoute';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,11 +27,13 @@ export default function RootLayout({
         <StoreProvider>
           <CssBaseline />
           <AppRouterCacheProvider options={{ key: 'css' }}>
-            <StyledEngineProvider injectFirst>
-              <Header />
-              {children}
-              <Footer />
-            </StyledEngineProvider>
+           <PrivateRoute>
+              <StyledEngineProvider injectFirst>
+                <Header />
+                {children}
+                <Footer />
+              </StyledEngineProvider>
+            </PrivateRoute>
           </AppRouterCacheProvider>
         </StoreProvider>
       </body>
