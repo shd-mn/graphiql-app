@@ -21,7 +21,7 @@ module.exports = {
       jsx: true,
     },
   },
-  plugins: ['react', 'react-hooks', '@typescript-eslint', 'react-compiler'],
+  plugins: ['react', 'react-hooks', '@typescript-eslint'],
   settings: {
     react: {
       version: 'detect',
@@ -29,7 +29,6 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/no-explicit-any': 'error',
-    'react-compiler/react-compiler': 'error',
     'react/jsx-uses-react': 'off',
     'react/jsx-uses-vars': 'off',
     'react/react-in-jsx-scope': 'off',

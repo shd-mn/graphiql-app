@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
+import { StoreProvider } from './StoreProvider';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import { StyledEngineProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { StyledEngineProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import './globals.css';
 import PrivateRoute from '@/components/PrivateRoute';
 
@@ -23,16 +24,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        <CssBaseline />
-        <AppRouterCacheProvider>
-          <PrivateRoute>
-            <StyledEngineProvider injectFirst>
-              <Header />
-              {children}
-              <Footer />
-            </StyledEngineProvider>
-          </PrivateRoute>
-        </AppRouterCacheProvider>
+        <StoreProvider>
+          <CssBaseline />
+          <AppRouterCacheProvider options={{ key: 'css' }}>
+            <PrivateRoute>
+              <StyledEngineProvider injectFirst>
+                <Header />
+                {children}
+                <Footer />
+              </StyledEngineProvider>
+            </PrivateRoute>
+          </AppRouterCacheProvider>
+        </StoreProvider>
       </body>
     </html>
   );
