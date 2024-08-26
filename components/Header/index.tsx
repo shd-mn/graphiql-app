@@ -1,4 +1,5 @@
 'use client';
+
 import Link from 'next/link';
 import { routes } from '@/constants/routes';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -29,10 +30,10 @@ function Header() {
         </Button>
         {!user ? (
           <div>
-            <Button href="/login" color="inherit">
+            <Button href={routes.login} color="inherit">
               Sign In
             </Button>
-            <Button href="/signup" color="inherit">
+            <Button href={routes.signup} color="inherit">
               Sign Up
             </Button>
           </div>

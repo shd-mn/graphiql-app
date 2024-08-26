@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { SignInData } from '@/interfaces/auth.interface';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,15 +14,20 @@ import {
   OutlinedInput,
   FormHelperText,
   TextField,
+  Alert,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth } from '@/firebase';
+import { routes } from '@/constants/routes';
+import { Box } from '@mui/system';
 
 function FormSignIn() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [signInError, setSignInError] = useState<string | null>(null);
 
   const {
     register,
@@ -33,15 +38,14 @@ function FormSignIn() {
   });
 
   const onFormSubmit = async (data: SignInData) => {
+    setSignInError(null);
     try {
       await signInWithEmailAndPassword(auth, data.login, data.password);
-      router.push('/');
+      router.push(routes.home);
     } catch (error) {
-      console.log(error);
+      setSignInError('Failed to sign in. Please try again.');
     }
   };
-
-  const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -51,11 +55,12 @@ function FormSignIn() {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="flex w-full max-w-sm flex-col gap-4 p-3">
+      <Box>{signInError ? <Alert severity="error">{signInError}</Alert> : <Box height={48} />}</Box>
       <TextField
         error={!!errors.login}
         id="login"
         label="Login"
-        helperText={errors.login ? errors.login.message : ''}
+        helperText={errors.login ? errors.login.message : ' '}
         {...register('login')}
       />
       <FormControl variant="outlined" error={!!errors.password}>
@@ -79,14 +84,14 @@ function FormSignIn() {
           autoComplete="current-password"
           {...register('password')}
         />
-        <FormHelperText>{errors.password ? errors.password.message : ''}</FormHelperText>
+        <FormHelperText>{errors.password ? errors.password.message : ' '}</FormHelperText>
       </FormControl>
       <Button type="submit" variant="contained" disabled={!isValid && isSubmitted}>
         Sign in
       </Button>
       <div className="flex flex-col items-center">
         <p className="m-0">If you don&apos;t have an account, please</p>
-        <Button href="/signup">Sign up</Button>
+        <Button href={routes.signup}>Sign up</Button>
       </div>
     </form>
   );
