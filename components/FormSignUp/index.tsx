@@ -20,10 +20,11 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from 'next/navigation';
 import { signUpValidationSchema } from '@/validation/signup.validation';
-import { createUserWithEmailAndPassword, updateProfile } from '@firebase/auth';
-import { auth } from '@/firebase';
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from '@firebase/auth';
+import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
 import { Box } from '@mui/system';
+import { FirebaseError } from '@firebase/util';
 
 function FormSignUp() {
   const router = useRouter();
@@ -42,10 +43,19 @@ function FormSignUp() {
     setSignUpError(null);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.login, data.password);
+      await logout();
       await updateProfile(userCredential.user, { displayName: data.name });
+      console.log('Please confirm your email address');
+      await sendEmailVerification(userCredential.user);
       router.push(routes.home);
+      console.log('Signup successful');
     } catch (error) {
-      setSignUpError('Failed to sign up. Please try again.');
+      if (error instanceof FirebaseError && error.code === 'auth/email-already-in-use') {
+        setSignUpError('You already sign up');
+        router.push(routes.login);
+      } else {
+        setSignUpError('Failed to sign up. Please try again.');
+      }
     }
   };
 

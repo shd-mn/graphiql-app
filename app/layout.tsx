@@ -27,7 +27,7 @@ export default function RootLayout({
         <StoreProvider>
           <CssBaseline />
           <AppRouterCacheProvider options={{ key: 'css' }}>
-           <PrivateRoute>
+            <PrivateRoute>
               <StyledEngineProvider injectFirst>
                 <Header />
                 {children}

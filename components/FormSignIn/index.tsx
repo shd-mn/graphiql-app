@@ -20,9 +20,10 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from '@firebase/auth';
-import { auth } from '@/firebase';
+import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
 import { Box } from '@mui/system';
+import { FirebaseError } from '@firebase/util';
 
 function FormSignIn() {
   const router = useRouter();
@@ -40,10 +41,21 @@ function FormSignIn() {
   const onFormSubmit = async (data: SignInData) => {
     setSignInError(null);
     try {
-      await signInWithEmailAndPassword(auth, data.login, data.password);
-      router.push(routes.home);
+      const user = await signInWithEmailAndPassword(auth, data.login, data.password);
+      if (!user.user.emailVerified) {
+        await logout();
+        console.log('Please confirm your email address');
+        router.push(routes.login);
+      } else {
+        console.log('Sign in successful');
+        router.push(routes.home);
+      }
     } catch (error) {
-      setSignInError('Failed to sign in. Please try again.');
+      if (error instanceof FirebaseError && error.code === 'auth/user-not-found') {
+        setSignInError('Please create an account');
+      } else {
+        setSignInError('Failed to sign in. Please try again.');
+      }
     }
   };
 
