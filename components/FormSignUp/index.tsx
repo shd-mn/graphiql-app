@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { SignUpData } from '@/interfaces/auth.interface';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,7 +14,6 @@ import {
   OutlinedInput,
   FormHelperText,
   TextField,
-  Alert,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -23,13 +22,15 @@ import { signUpValidationSchema } from '@/validation/signup.validation';
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from '@firebase/auth';
 import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
-import { Box } from '@mui/system';
 import { FirebaseError } from '@firebase/util';
+import { useAppDispatch } from '@/redux/hooks';
+import { setMessage } from '@/redux/features/toastMessage/toastSlice';
+import { toastMessages } from '@/constants/toastMessages';
 
 function FormSignUp() {
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [signUpError, setSignUpError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -40,21 +41,20 @@ function FormSignUp() {
   });
 
   const onFormSubmit = async (data: SignUpData) => {
-    setSignUpError(null);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.login, data.password);
       await logout();
       await updateProfile(userCredential.user, { displayName: data.name });
-      console.log('Please confirm your email address');
+      dispatch(setMessage({ message: toastMessages.confirmEmail, type: 'warning' }));
       await sendEmailVerification(userCredential.user);
       router.push(routes.home);
-      console.log('Signup successful');
+      setTimeout(() => dispatch(setMessage({ message: toastMessages.successSignUp, type: 'success' })), 4000);
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/email-already-in-use') {
-        setSignUpError('You already sign up');
+        dispatch(setMessage({ message: toastMessages.userAlreadyExist, type: 'warning' }));
         router.push(routes.login);
       } else {
-        setSignUpError('Failed to sign up. Please try again.');
+        dispatch(setMessage({ message: toastMessages.errorSignUp, type: 'error' }));
       }
     }
   };
@@ -67,7 +67,6 @@ function FormSignUp() {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="flex w-full max-w-sm flex-col gap-4 p-3">
-      <Box>{signUpError ? <Alert severity="error">{signUpError}</Alert> : <Box height={48} />}</Box>
       <TextField
         error={!!errors.name}
         id="name"
