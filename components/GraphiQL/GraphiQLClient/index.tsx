@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { Tab, Tabs, TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, Tab, Tabs, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import CustomTabPanel from '@/components/RestClient/Form/CustomTabPanel';
 import CodeMirror from '@uiw/react-codemirror';
@@ -22,6 +22,33 @@ const GraphiQLClient = () => {
     setValue(newValue);
   };
 
+  const [query, setQuery] = useState('');
+  const [variables, setVariables] = useState('');
+  const [response, setResponse] = useState<null | { error: string }>(null);
+
+  const executeQuery = async () => {
+    console.log(response);
+    try {
+      const reqQuery = query.slice(5);
+      const res = await fetch('https://recipes-back-8dgq.onrender.com/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          operationName: null,
+          query: reqQuery,
+          variables: variables ? JSON.parse(variables) : {},
+        }),
+      });
+
+      const data = await res.json();
+      setResponse(data);
+    } catch (error) {
+      setResponse({ error: 'Failed to fetch data' });
+    }
+  };
+
   return (
     <section className="p-3">
       <div className="flex flex-col gap-2">
@@ -36,14 +63,15 @@ const GraphiQLClient = () => {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <CodeMirror width="100%" theme={vscodeDark} />
+        <CodeMirror width="100%" theme={vscodeDark} value={query} onChange={(value) => setQuery(value)} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <GraphiqlHeader></GraphiqlHeader>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <CodeMirror width="100%" theme={vscodeDark} />
+        <CodeMirror width="100%" theme={vscodeDark} value={variables} onChange={(value) => setVariables(value)} />
       </CustomTabPanel>
+      <Button onClick={() => executeQuery()}>Send</Button>
     </section>
   );
 };
