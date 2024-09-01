@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { SignUpData } from '@/interfaces/auth.interface';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,21 +14,23 @@ import {
   OutlinedInput,
   FormHelperText,
   TextField,
-  Alert,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from 'next/navigation';
 import { signUpValidationSchema } from '@/validation/signup.validation';
-import { createUserWithEmailAndPassword, updateProfile } from '@firebase/auth';
-import { auth } from '@/firebase';
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from '@firebase/auth';
+import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
-import { Box } from '@mui/system';
+import { FirebaseError } from '@firebase/util';
+import { useAppDispatch } from '@/redux/hooks';
+import { setMessage } from '@/redux/features/toastMessage/toastSlice';
+import { toastMessages } from '@/constants/toastMessages';
 
 function FormSignUp() {
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [signUpError, setSignUpError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -39,13 +41,21 @@ function FormSignUp() {
   });
 
   const onFormSubmit = async (data: SignUpData) => {
-    setSignUpError(null);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.login, data.password);
+      await logout();
       await updateProfile(userCredential.user, { displayName: data.name });
+      dispatch(setMessage({ message: toastMessages.confirmEmail, type: 'warning' }));
+      await sendEmailVerification(userCredential.user);
       router.push(routes.home);
+      setTimeout(() => dispatch(setMessage({ message: toastMessages.successSignUp, type: 'success' })), 4000);
     } catch (error) {
-      setSignUpError('Failed to sign up. Please try again.');
+      if (error instanceof FirebaseError && error.code === 'auth/email-already-in-use') {
+        dispatch(setMessage({ message: toastMessages.userAlreadyExist, type: 'warning' }));
+        router.push(routes.login);
+      } else {
+        dispatch(setMessage({ message: toastMessages.errorSignUp, type: 'error' }));
+      }
     }
   };
 
@@ -57,7 +67,6 @@ function FormSignUp() {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="flex w-full max-w-sm flex-col gap-4 p-3">
-      <Box>{signUpError ? <Alert severity="error">{signUpError}</Alert> : <Box height={48} />}</Box>
       <TextField
         error={!!errors.name}
         id="name"

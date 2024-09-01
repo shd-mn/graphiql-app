@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { SignInData } from '@/interfaces/auth.interface';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,20 +14,22 @@ import {
   OutlinedInput,
   FormHelperText,
   TextField,
-  Alert,
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from '@firebase/auth';
-import { auth } from '@/firebase';
+import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
-import { Box } from '@mui/system';
+import { FirebaseError } from '@firebase/util';
+import { useAppDispatch } from '@/redux/hooks';
+import { setMessage } from '@/redux/features/toastMessage/toastSlice';
+import { toastMessages } from '@/constants/toastMessages';
 
 function FormSignIn() {
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [signInError, setSignInError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -38,12 +40,22 @@ function FormSignIn() {
   });
 
   const onFormSubmit = async (data: SignInData) => {
-    setSignInError(null);
     try {
-      await signInWithEmailAndPassword(auth, data.login, data.password);
-      router.push(routes.home);
+      const user = await signInWithEmailAndPassword(auth, data.login, data.password);
+      if (!user.user.emailVerified) {
+        await logout();
+        dispatch(setMessage({ message: toastMessages.confirmEmail, type: 'warning' }));
+        router.push(routes.login);
+      } else {
+        dispatch(setMessage({ message: toastMessages.successSignIn, type: 'success' }));
+        router.push(routes.home);
+      }
     } catch (error) {
-      setSignInError('Failed to sign in. Please try again.');
+      if (error instanceof FirebaseError && error.code === 'auth/invalid-credential') {
+        dispatch(setMessage({ message: toastMessages.userNotFound, type: 'error' }));
+      } else {
+        dispatch(setMessage({ message: toastMessages.errorSignIn, type: 'error' }));
+      }
     }
   };
 
@@ -55,7 +67,6 @@ function FormSignIn() {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="flex w-full max-w-sm flex-col gap-4 p-3">
-      <Box>{signInError ? <Alert severity="error">{signInError}</Alert> : <Box height={48} />}</Box>
       <TextField
         error={!!errors.login}
         id="login"

@@ -6,17 +6,22 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, logout } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { Button } from '@mui/material';
+import { useAppDispatch } from '@/redux/hooks';
+import { setMessage } from '@/redux/features/toastMessage/toastSlice';
+import { toastMessages } from '@/constants/toastMessages';
 
 function Header() {
   const [user] = useAuthState(auth);
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const onLogout = async () => {
     try {
       await logout();
+      dispatch(setMessage({ message: toastMessages.signOutSuccess, type: 'success' }));
       router.push(routes.home);
     } catch (error) {
-      console.log(error);
+      dispatch(setMessage({ message: toastMessages.errorSignOut, type: 'error' }));
     }
   };
   return (
