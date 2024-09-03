@@ -8,6 +8,7 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import './globals.css';
 import PrivateRoute from '@/components/PrivateRoute';
+import ToastMessage from '@/components/ToastMessage';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,9 +30,11 @@ export default function RootLayout({
           <AppRouterCacheProvider options={{ key: 'css' }}>
             <PrivateRoute>
               <StyledEngineProvider injectFirst>
-                <Header />
-                {children}
-                <Footer />
+                <ToastMessage>
+                  <Header />
+                  {children}
+                  <Footer />
+                </ToastMessage>
               </StyledEngineProvider>
             </PrivateRoute>
           </AppRouterCacheProvider>
