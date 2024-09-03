@@ -6,6 +6,7 @@ export interface GraphiqlSliceState {
   url: string;
   sdlUrl: string;
   response: string;
+  schema: string;
 }
 
 const initialState: GraphiqlSliceState = {
@@ -14,6 +15,7 @@ const initialState: GraphiqlSliceState = {
   url: '',
   sdlUrl: '',
   response: '',
+  schema: '',
 };
 
 export const graphiqlSlice = createSlice({
@@ -35,6 +37,9 @@ export const graphiqlSlice = createSlice({
     setResponse: create.reducer((state, action: PayloadAction<string>) => {
       state.response = action.payload;
     }),
+    setSchema: create.reducer((state, action: PayloadAction<string>) => {
+      state.schema = action.payload;
+    }),
   }),
 
   selectors: {
@@ -44,10 +49,11 @@ export const graphiqlSlice = createSlice({
     selectUrl: (graphiql) => graphiql.url,
     selectSdlUrl: (graphiql) => graphiql.sdlUrl,
     selectResponse: (graphiql) => graphiql.response,
+    selectSchema: (graphiql) => graphiql.schema,
   },
 });
 
-export const { setQuery, setVariables, setUrl, setResponse } = graphiqlSlice.actions;
+export const { setQuery, setVariables, setUrl, setSdlUrl, setResponse, setSchema } = graphiqlSlice.actions;
 
-export const { selectAll, selectQuery, selectVariables, selectUrl, selectSdlUrl, selectResponse } =
+export const { selectAll, selectQuery, selectVariables, selectUrl, selectSdlUrl, selectResponse, selectSchema } =
   graphiqlSlice.selectors;

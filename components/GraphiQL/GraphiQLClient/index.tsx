@@ -29,27 +29,27 @@ const GraphiQLClient = () => {
   const dispatch = useAppDispatch();
   const { query, variables, url } = useAppSelector(selectAll);
 
-  const executeQuery = async () => {
+  const executeQuery = async (operation: string | null = null, requestQuery: string | null = null) => {
     try {
-      const reqQuery = query.slice(5);
+      // todo: replace a with a value from query
+      const operationName = operation ? operation : 'a';
+      const reqQuery = requestQuery ?? query.slice(5);
       const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          operationName: null,
+          operationName,
           query: reqQuery,
           variables: variables ? JSON.parse(variables) : {},
         }),
       });
 
       const data = await res.json();
+
       dispatch(setResponse(data));
-      const a = Buffer.from(JSON.stringify(data.data), 'utf-8').toString('base64');
-      const b = Buffer.from(a, 'base64').toString('utf-8');
-      console.log(a, '!!!!', b);
-      router.push(`/graphql/${a}`);
+      return data;
     } catch (error) {
       dispatch(setResponse('Failed to fetch data'));
     }
@@ -57,6 +57,15 @@ const GraphiQLClient = () => {
 
   const changeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setUrl(e.target.value));
+  };
+  const schemaQuery =
+    'query IntrospectionQuery {\n  __schema {\n    queryType {\n      name\n    }\n    mutationType {\n      name\n    }\n    subscriptionType {\n      name\n    }\n    types {\n      ...FullType\n    }\n    directives {\n      name\n      description\n      locations\n      args {\n        ...InputValue\n      }\n    }\n  }\n}\n\nfragment FullType on __Type {\n  kind\n  name\n  description\n  fields(includeDeprecated: true) {\n    name\n    description\n    args {\n      ...InputValue\n    }\n    type {\n      ...TypeRef\n    }\n    isDeprecated\n    deprecationReason\n  }\n  inputFields {\n    ...InputValue\n  }\n  interfaces {\n    ...TypeRef\n  }\n  enumValues(includeDeprecated: true) {\n    name\n    description\n    isDeprecated\n    deprecationReason\n  }\n  possibleTypes {\n    ...TypeRef\n  }\n}\n\nfragment InputValue on __InputValue {\n  name\n  description\n  type {\n    ...TypeRef\n  }\n  defaultValue\n}\n\nfragment TypeRef on __Type {\n  kind\n  name\n  ofType {\n    kind\n    name\n    ofType {\n      kind\n      name\n      ofType {\n        kind\n        name\n        ofType {\n          kind\n          name\n          ofType {\n            kind\n            name\n            ofType {\n              kind\n              name\n              ofType {\n                kind\n                name\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n';
+
+  const sendQuery = () => {
+    executeQuery().then((data) => {
+      const a = Buffer.from(JSON.stringify(data.data), 'utf-8').toString('base64');
+      router.push(`/graphql/${a}`);
+    });
   };
 
   return (
@@ -86,7 +95,8 @@ const GraphiQLClient = () => {
           onChange={(value) => dispatch(setVariables(value))}
         />
       </CustomTabPanel>
-      <Button onClick={() => executeQuery()}>Send</Button>
+      <Button onClick={() => sendQuery()}>Send</Button>
+      <Button onClick={() => executeQuery('IntrospectionQuery', schemaQuery)}>Schema</Button>
     </section>
   );
 };
