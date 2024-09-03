@@ -8,8 +8,17 @@ import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode/cjs/dark';
 import GraphiqlHeader from '@/components/GraphiQL/GraphiQLClient/GraphiqlHeader';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { selectAll, setQuery, setResponse, setUrl, setVariables } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import {
+  selectAll,
+  setQuery,
+  setResponse,
+  setSchema,
+  setUrl,
+  setVariables,
+} from '@/redux/features/graphiqlClient/graphiqlSlice';
 import { useRouter } from 'next/navigation';
+import { buildClientSchema } from 'graphql/utilities';
+import Documentation from '@/components/GraphiQL/Documentation';
 
 const GraphiQLClient = () => {
   function a11yProps(index: number) {
@@ -49,6 +58,11 @@ const GraphiQLClient = () => {
       const data = await res.json();
 
       dispatch(setResponse(data));
+      if (operation) {
+        const a = buildClientSchema(data.data);
+        console.log(a, 'adata');
+        dispatch(setSchema(data.data));
+      }
       return data;
     } catch (error) {
       dispatch(setResponse('Failed to fetch data'));
@@ -79,6 +93,7 @@ const GraphiQLClient = () => {
           <Tab label="Query" {...a11yProps(0)} />
           <Tab label="Headers" {...a11yProps(1)} />
           <Tab label="Variables" {...a11yProps(2)} />
+          <Tab label="Documentation" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -94,6 +109,9 @@ const GraphiQLClient = () => {
           value={variables}
           onChange={(value) => dispatch(setVariables(value))}
         />
+      </CustomTabPanel>
+      <CustomTabPanel index={3} value={value}>
+        <Documentation></Documentation>
       </CustomTabPanel>
       <Button onClick={() => sendQuery()}>Send</Button>
       <Button onClick={() => executeQuery('IntrospectionQuery', schemaQuery)}>Schema</Button>

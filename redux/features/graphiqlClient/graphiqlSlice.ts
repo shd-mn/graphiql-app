@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { GraphQLSchema } from 'graphql/type';
 
 export interface GraphiqlSliceState {
   query: string;
@@ -6,7 +7,7 @@ export interface GraphiqlSliceState {
   url: string;
   sdlUrl: string;
   response: string;
-  schema: string;
+  schema: GraphQLSchema | null;
 }
 
 const initialState: GraphiqlSliceState = {
@@ -15,7 +16,7 @@ const initialState: GraphiqlSliceState = {
   url: '',
   sdlUrl: '',
   response: '',
-  schema: '',
+  schema: null,
 };
 
 export const graphiqlSlice = createSlice({
@@ -37,8 +38,8 @@ export const graphiqlSlice = createSlice({
     setResponse: create.reducer((state, action: PayloadAction<string>) => {
       state.response = action.payload;
     }),
-    setSchema: create.reducer((state, action: PayloadAction<string>) => {
-      state.schema = action.payload;
+    setSchema: create.reducer((state, action: PayloadAction<GraphQLSchema | null>) => {
+      state.schema = action.payload as GraphQLSchema;
     }),
   }),
 
