@@ -8,16 +8,8 @@ import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode/cjs/dark';
 import GraphiqlHeader from '@/components/GraphiQL/GraphiQLClient/GraphiqlHeader';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import {
-  selectAll,
-  setQuery,
-  setResponse,
-  setSchema,
-  setUrl,
-  setVariables,
-} from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { selectAll, setQuery, setResponse, setUrl, setVariables } from '@/redux/features/graphiqlClient/graphiqlSlice';
 import { useRouter } from 'next/navigation';
-import { buildClientSchema } from 'graphql/utilities';
 import Documentation from '@/components/GraphiQL/Documentation';
 
 const GraphiQLClient = () => {
@@ -59,9 +51,7 @@ const GraphiQLClient = () => {
 
       dispatch(setResponse(data));
       if (operation) {
-        const a = buildClientSchema(data.data);
-        console.log(a, 'adata');
-        dispatch(setSchema(data.data));
+        dispatch(setUrl(url));
       }
       return data;
     } catch (error) {

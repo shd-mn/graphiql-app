@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GraphQLSchema } from 'graphql/type';
 
 export interface GraphiqlSliceState {
   query: string;
@@ -7,7 +6,6 @@ export interface GraphiqlSliceState {
   url: string;
   sdlUrl: string;
   response: string;
-  schema: GraphQLSchema | null;
 }
 
 const initialState: GraphiqlSliceState = {
@@ -16,7 +14,6 @@ const initialState: GraphiqlSliceState = {
   url: '',
   sdlUrl: '',
   response: '',
-  schema: null,
 };
 
 export const graphiqlSlice = createSlice({
@@ -38,9 +35,6 @@ export const graphiqlSlice = createSlice({
     setResponse: create.reducer((state, action: PayloadAction<string>) => {
       state.response = action.payload;
     }),
-    setSchema: create.reducer((state, action: PayloadAction<GraphQLSchema | null>) => {
-      state.schema = action.payload as GraphQLSchema;
-    }),
   }),
 
   selectors: {
@@ -50,11 +44,10 @@ export const graphiqlSlice = createSlice({
     selectUrl: (graphiql) => graphiql.url,
     selectSdlUrl: (graphiql) => graphiql.sdlUrl,
     selectResponse: (graphiql) => graphiql.response,
-    selectSchema: (graphiql) => graphiql.schema,
   },
 });
 
-export const { setQuery, setVariables, setUrl, setSdlUrl, setResponse, setSchema } = graphiqlSlice.actions;
+export const { setQuery, setVariables, setUrl, setSdlUrl, setResponse } = graphiqlSlice.actions;
 
-export const { selectAll, selectQuery, selectVariables, selectUrl, selectSdlUrl, selectResponse, selectSchema } =
+export const { selectAll, selectQuery, selectVariables, selectUrl, selectSdlUrl, selectResponse } =
   graphiqlSlice.selectors;
