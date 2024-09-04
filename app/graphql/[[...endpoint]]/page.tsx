@@ -1,5 +1,5 @@
-import GraphiQLClient from '@/components/GraphiQL/GraphiQLClient';
 import ResponseSection from '@/components/RestClient/ResponseSection';
+import GraphiQLClient from '@/components/GraphiQLClient';
 
 interface Props {
   params?: {
