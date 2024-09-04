@@ -34,11 +34,14 @@ const GraphiQLClient = () => {
   };
 
   const executeQuery = async () => {
-    console.log(query, 'query');
+    const lines = query.split('\n');
+    const filteredLines = lines.filter((line) => !line.trim().startsWith('#'));
+    const filteredQuery = filteredLines.join('\n');
     try {
-      // todo: replace a with a value from query
-      const operationName = null;
-      const reqQuery = query.slice(5);
+      const [queryType] = filteredQuery.match(/(query|mutation|subscription)/) || [''];
+
+      const [operationName] = filteredQuery.match(/(?<=query|mutation|subscription)\s*([^\s{]+)\s*\{/) || [];
+      const [reqQuery] = filteredQuery.match(/{[\s\S]*$/) || [''];
       const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -46,7 +49,7 @@ const GraphiQLClient = () => {
         },
         body: JSON.stringify({
           operationName,
-          query: reqQuery,
+          query: !operationName && queryType === 'query' ? reqQuery : filteredQuery,
           variables: variables ? JSON.parse(variables) : {},
         }),
       });
