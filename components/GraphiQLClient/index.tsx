@@ -4,26 +4,19 @@ import React, { useMemo } from 'react';
 import { Button, Tab, Tabs, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import CustomTabPanel from '@/components/RestClient/Form/CustomTabPanel';
-import CodeMirror from '@uiw/react-codemirror';
-import { vscodeDark } from '@uiw/codemirror-theme-vscode/cjs/dark';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import {
-  selectAll,
-  setQuery,
-  setResponse,
-  setSdlUrl,
-  setUrl,
-  setVariables,
-} from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { selectAll, setQuery, setResponse, setSdlUrl, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
 import { useRouter } from 'next/navigation';
 import { GraphiQLProvider, QueryEditor } from '@graphiql/react';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import GraphiqlHeader from '@/components/GraphiQLClient/GraphiqlHeader';
 import Documentation from '@/components/GraphiQLClient/Documentation';
 import PrettifyButton from '@/components/GraphiQLClient/PrettifyButton';
+import VariablesSection from '@/components/GraphiQLClient/VariablesSection';
+import HeadersSection from '@/components/GraphiQLClient/HeadersSection';
 
 const GraphiQLClient = () => {
-  const { query, variables, url, sdlUrl } = useAppSelector(selectAll);
+  const { query, variables, url, sdlUrl, headers } = useAppSelector(selectAll);
   const fetcher = useMemo(() => createGraphiQLFetcher({ url }), [url]);
   const [value, setValue] = React.useState(0);
   const router = useRouter();
@@ -37,19 +30,27 @@ const GraphiQLClient = () => {
     const lines = query.split('\n');
     const filteredLines = lines.filter((line) => !line.trim().startsWith('#'));
     const filteredQuery = filteredLines.join('\n');
+
+    const reqHeaders = headers
+      ? JSON.parse(headers)
+      : {
+          'Content-Type': 'application/json',
+        };
+
     try {
       const [queryType] = filteredQuery.match(/(query|mutation|subscription)/) || [''];
-
-      const [operationName] = filteredQuery.match(/(?<=query|mutation|subscription)\s*([^\s{]+)\s*\{/) || [];
+      const [_, operationName] = filteredQuery.match(/(?<=query|mutation|subscription)\s*([^\s{]+)\s*\{/) || [];
       const [reqQuery] = filteredQuery.match(/{[\s\S]*$/) || [''];
+      const isVariablesProvidedInTheQuery = !!filteredQuery.match(
+        /^\s*(mutation|query)\s*[a-zA-Z0-9_]*\s*\([^)]+\)\s*\{/,
+      );
+
       const res = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: reqHeaders,
         body: JSON.stringify({
           operationName,
-          query: !operationName && queryType === 'query' ? reqQuery : filteredQuery,
+          query: !operationName && queryType === 'query' && !isVariablesProvidedInTheQuery ? reqQuery : filteredQuery,
           variables: variables ? JSON.parse(variables) : {},
         }),
       });
@@ -61,15 +62,15 @@ const GraphiQLClient = () => {
     }
   };
 
-  const changeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setUrl(e.target.value));
-  };
-
   const sendQuery = () => {
     executeQuery().then((data) => {
       const a = Buffer.from(JSON.stringify(data.data), 'utf-8').toString('base64');
       router.push(`/graphql/${a}`);
     });
+  };
+
+  const changeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setUrl(e.target.value));
   };
 
   function a11yProps(index: number) {
@@ -111,18 +112,19 @@ const GraphiQLClient = () => {
               <PrettifyButton />
               <QueryEditor onEdit={edit} />
             </div>
+            <div className="my-4 h-64 py-4">
+              variables
+              <VariablesSection />
+            </div>
+            <div className="h-64">
+              headers
+              <HeadersSection />
+            </div>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             <GraphiqlHeader></GraphiqlHeader>
           </CustomTabPanel>
-          <CustomTabPanel value={value} index={2}>
-            <CodeMirror
-              width="100%"
-              theme={vscodeDark}
-              value={variables}
-              onChange={(value) => dispatch(setVariables(value))}
-            />
-          </CustomTabPanel>
+          <CustomTabPanel value={value} index={2}></CustomTabPanel>
           <CustomTabPanel index={3} value={value}>
             <Documentation></Documentation>
           </CustomTabPanel>

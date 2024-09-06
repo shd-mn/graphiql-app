@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface GraphiqlSliceState {
   query: string;
   variables: string;
+  headers: string;
   url: string;
   sdlUrl: string;
   response: string;
@@ -11,6 +12,7 @@ export interface GraphiqlSliceState {
 const initialState: GraphiqlSliceState = {
   query: '',
   variables: '',
+  headers: '',
   url: '',
   sdlUrl: '',
   response: '',
@@ -26,6 +28,9 @@ export const graphiqlSlice = createSlice({
     setVariables: create.reducer((state, action: PayloadAction<string>) => {
       state.variables = action.payload;
     }),
+    setHeaders: create.reducer((state, action: PayloadAction<string>) => {
+      state.headers = action.payload;
+    }),
     setUrl: create.reducer((state, action: PayloadAction<string>) => {
       state.url = action.payload;
     }),
@@ -40,6 +45,7 @@ export const graphiqlSlice = createSlice({
   selectors: {
     selectAll: (graphiql) => graphiql,
     selectQuery: (graphiql) => graphiql.query,
+    selectHeaders: (graphiql) => graphiql.headers,
     selectVariables: (graphiql) => graphiql.variables,
     selectUrl: (graphiql) => graphiql.url,
     selectSdlUrl: (graphiql) => graphiql.sdlUrl,
@@ -47,7 +53,7 @@ export const graphiqlSlice = createSlice({
   },
 });
 
-export const { setQuery, setVariables, setUrl, setSdlUrl, setResponse } = graphiqlSlice.actions;
+export const { setQuery, setVariables, setHeaders, setUrl, setSdlUrl, setResponse } = graphiqlSlice.actions;
 
-export const { selectAll, selectQuery, selectVariables, selectUrl, selectSdlUrl, selectResponse } =
+export const { selectAll, selectQuery, selectHeaders, selectVariables, selectUrl, selectSdlUrl, selectResponse } =
   graphiqlSlice.selectors;
