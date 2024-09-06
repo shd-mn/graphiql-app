@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Button, Tab, Tabs, TextField } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import CustomTabPanel from '@/components/RestClient/Form/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -13,7 +13,7 @@ import GraphiqlHeader from '@/components/GraphiQLClient/GraphiqlHeader';
 import Documentation from '@/components/GraphiQLClient/Documentation';
 import PrettifyButton from '@/components/GraphiQLClient/PrettifyButton';
 import VariablesSection from '@/components/GraphiQLClient/VariablesSection';
-import HeadersSection from '@/components/GraphiQLClient/HeadersSection';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const GraphiQLClient = () => {
   const { query, variables, url, sdlUrl, headers } = useAppSelector(selectAll);
@@ -30,9 +30,11 @@ const GraphiQLClient = () => {
     const lines = query.split('\n');
     const filteredLines = lines.filter((line) => !line.trim().startsWith('#'));
     const filteredQuery = filteredLines.join('\n');
+    const requestHeaders = Object.fromEntries(headers.map((header) => [header.key, header.value]).reverse());
+    console.log(requestHeaders);
 
     const reqHeaders = headers
-      ? JSON.parse(headers)
+      ? requestHeaders
       : {
           'Content-Type': 'application/json',
         };
@@ -103,32 +105,30 @@ const GraphiQLClient = () => {
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
               <Tab label="Query" {...a11yProps(0)} />
               <Tab label="Headers" {...a11yProps(1)} />
-              <Tab label="Variables" {...a11yProps(2)} />
-              <Tab label="Documentation" {...a11yProps(3)} />
+              <Tab label="Documentation" {...a11yProps(2)} />
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <div className="h-64">
+            <div className="h-96">
               <PrettifyButton />
               <QueryEditor onEdit={edit} />
             </div>
-            <div className="my-4 h-64 py-4">
-              variables
-              <VariablesSection />
-            </div>
-            <div className="h-64">
-              headers
-              <HeadersSection />
-            </div>
+            <Accordion className="bg-gray-100 text-orange-600">
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+                VARIABLES
+              </AccordionSummary>
+              <AccordionDetails className="h-64">
+                <VariablesSection />
+              </AccordionDetails>
+            </Accordion>
+            <Button onClick={() => sendQuery()}>Send</Button>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             <GraphiqlHeader></GraphiqlHeader>
           </CustomTabPanel>
-          <CustomTabPanel value={value} index={2}></CustomTabPanel>
-          <CustomTabPanel index={3} value={value}>
+          <CustomTabPanel index={2} value={value}>
             <Documentation></Documentation>
           </CustomTabPanel>
-          <Button onClick={() => sendQuery()}>Send</Button>
         </section>
       </div>
     </GraphiQLProvider>

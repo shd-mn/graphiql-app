@@ -3,16 +3,21 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface GraphiqlSliceState {
   query: string;
   variables: string;
-  headers: string;
+  headers: GQLHeader[];
   url: string;
   sdlUrl: string;
   response: string;
 }
 
+export interface GQLHeader {
+  key: string;
+  value: string;
+}
+
 const initialState: GraphiqlSliceState = {
   query: '',
   variables: '',
-  headers: '',
+  headers: [{ key: 'Content-Type', value: 'application/json' }],
   url: '',
   sdlUrl: '',
   response: '',
@@ -28,7 +33,7 @@ export const graphiqlSlice = createSlice({
     setVariables: create.reducer((state, action: PayloadAction<string>) => {
       state.variables = action.payload;
     }),
-    setHeaders: create.reducer((state, action: PayloadAction<string>) => {
+    setHeaders: create.reducer((state, action: PayloadAction<GQLHeader[]>) => {
       state.headers = action.payload;
     }),
     setUrl: create.reducer((state, action: PayloadAction<string>) => {
@@ -55,5 +60,4 @@ export const graphiqlSlice = createSlice({
 
 export const { setQuery, setVariables, setHeaders, setUrl, setSdlUrl, setResponse } = graphiqlSlice.actions;
 
-export const { selectAll, selectQuery, selectHeaders, selectVariables, selectUrl, selectSdlUrl, selectResponse } =
-  graphiqlSlice.selectors;
+export const { selectAll, selectHeaders, selectUrl, selectSdlUrl } = graphiqlSlice.selectors;
