@@ -30,7 +30,7 @@ const Welcome = () => {
               <Button href={routes.restfull} color="inherit" variant="outlined">
                 REST Client
               </Button>
-              <Button color="inherit" variant="outlined">
+              <Button href={routes.graphql} color="inherit" variant="outlined">
                 GraphiQL Client
               </Button>
               <Button color="inherit" variant="outlined">
