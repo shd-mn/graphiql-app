@@ -4,5 +4,5 @@ export const routes = {
   signup: '/signup',
   graphql: '/graphql',
   restfull: '/rest',
-  histor: '/history',
+  history: '/history',
 };
