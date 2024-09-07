@@ -2,7 +2,7 @@ export const routes = {
   home: '/',
   login: '/login',
   signup: '/signup',
-  graphql: '/graphql',
+  graphql: '/GRAPHQL',
   restfull: '/rest',
   histor: '/history',
 };

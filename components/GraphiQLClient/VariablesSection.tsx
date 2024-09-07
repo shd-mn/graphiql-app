@@ -11,7 +11,6 @@ function VariablesSection() {
   // const schemaContext = useSchemaContext();
 
   if (editor && state) {
-    console.log(editor);
     dispatch(setVariables(state[0]));
   }
   return <VariableEditor></VariableEditor>;

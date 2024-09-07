@@ -14,6 +14,7 @@ import Documentation from '@/components/GraphiQLClient/Documentation';
 import PrettifyButton from '@/components/GraphiQLClient/PrettifyButton';
 import VariablesSection from '@/components/GraphiQLClient/VariablesSection';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { routes } from '@/constants/routes';
 
 const GraphiQLClient = () => {
   const { query, variables, url, sdlUrl, headers } = useAppSelector(selectAll);
@@ -67,7 +68,7 @@ const GraphiQLClient = () => {
   const sendQuery = () => {
     executeQuery().then((data) => {
       const a = Buffer.from(JSON.stringify(data.data), 'utf-8').toString('base64');
-      router.push(`/graphql/${a}`);
+      router.push(`${routes.graphql}/${a}`);
     });
   };
 
