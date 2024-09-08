@@ -1,6 +1,6 @@
-import { QueryParam } from '@/constants/restClientData';
+import type { Param } from '@/types';
 
-export const createQueryString = (query: QueryParam[] | undefined) => {
+export const createQueryString = (query: Param[] | undefined) => {
   if (!query) return '';
   const queryString = query
     .map((item) => {
@@ -12,5 +12,5 @@ export const createQueryString = (query: QueryParam[] | undefined) => {
     .filter(Boolean)
     .join('&');
 
-  return `?${queryString}`;
+  return queryString;
 };
