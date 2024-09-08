@@ -1,48 +1,46 @@
 'use client';
 import { useState } from 'react';
 import InputTable from '@/components/RestClient/Table/InputTable';
-import { restClientValidationSchema } from '@/validation/restclient.validation';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, FormControl, MenuItem, OutlinedInput, Select, Tab, Tabs, Typography } from '@mui/material';
-import { vscodeDark } from '@uiw/codemirror-theme-vscode';
-import CodeMirror from '@uiw/react-codemirror';
-import { json } from '@codemirror/lang-json';
+import Editor from '@monaco-editor/react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { methods, QueryParam, type Method } from '@/constants/restClientData';
+import { methods } from '@/constants/restClientData';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CustomTabPanel from './CustomTabPanel';
-import { selectAll, setHeaders, setMethod, setQueryParam, setURL } from '@/redux/features/restfullClient/restfullSlice';
-import { createQueryString } from '@/utils/createQueryString';
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
+import { selectAll, setAllState } from '@/redux/features/restfullClient/restfullSlice';
+import type { Method, Param, RequestType } from '@/types';
+import { fetcher } from '@/services/response';
+import { generateUrl } from '@/utils/generateUrl';
+import { nanoid } from '@reduxjs/toolkit';
+import { setResponse } from '@/redux/features/mainSlice';
+import { a11yProps } from '@/utils/a11yProps';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 export type Inputs = {
   method: Method;
   url: string;
-  queryParams?: QueryParam[];
-  headers?: QueryParam[];
-  body?: string;
+  params: Param[];
+  headers: Param[];
+  body: string;
+  variables: Param[];
 };
 
 function RestForm() {
-  const dispatch = useAppDispatch();
-  const { method, url, queryParams, headers } = useAppSelector(selectAll);
   const [activeTab, setActiveTab] = useState(0);
+  const { storedValue: request, setLocalStorageValue } = useLocalStorage<RequestType[]>('requests', []);
+  const dispatch = useAppDispatch();
+  const { method, url, params, headers, body, variables } = useAppSelector(selectAll);
   const router = useRouter();
 
-  const form = useForm<Inputs>({
-    resolver: yupResolver(restClientValidationSchema),
+  const form = useForm({
     defaultValues: {
       method,
       url,
-      queryParams,
+      params,
       headers,
+      body,
+      variables,
     },
   });
   const {
@@ -52,33 +50,45 @@ function RestForm() {
     watch,
     formState: { errors },
   } = form;
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const { url, method, params, headers, body, variables } = data;
+    const id = nanoid();
+    const date = `${new Date().toISOString()}`;
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    dispatch(setMethod(data.method));
-    dispatch(setURL(data.url));
-    if (data.queryParams) {
-      dispatch(setQueryParam(data.queryParams));
-    }
+    const newRequest: RequestType = { id, method, url, params, headers, body, variables, date };
+    setLocalStorageValue([...request, newRequest]);
+    dispatch(setAllState(newRequest));
 
-    if (data.headers) {
-      dispatch(setHeaders(data.headers));
-    }
+    const fetchHeaders: Record<string, string> = {};
+    const fetchBody: string = body;
 
-    const finalQueryString = createQueryString(data.queryParams);
-    const headersQuery = createQueryString(data.headers);
-    const base64Encoded = btoa(`${data.url}${finalQueryString}`);
-    router.push(`/${data.method}/${base64Encoded}${headersQuery}`);
+    headers.forEach((header) => {
+      if (header.isChecked && header.key) {
+        fetchHeaders[header.key] = header.value;
+      }
+    });
+
+    const res = await fetcher(url, {
+      method: data.method,
+      headers: fetchHeaders,
+      body: fetchBody,
+    });
+
+    dispatch(setResponse(res));
+
+    const generatedUrl = generateUrl(newRequest);
+    router.push(`${generatedUrl}`);
   };
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
   const selectedColor = methods.find((item) => item.name === watch('method'))?.color;
   return (
-    <section>
+    <section className="h-full flex-1 p-3">
       <FormProvider {...form}>
-        <form className="p-3" onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Box component="div" className="mb-2 flex w-full items-start justify-between">
             <Controller
               render={({ field }) => (
@@ -102,7 +112,7 @@ function RestForm() {
             <FormControl fullWidth>
               <OutlinedInput
                 type="text"
-                {...register('url')}
+                {...register('url', { required: true })}
                 error={!!errors.url}
                 placeholder="https://example.com"
                 size="small"
@@ -115,23 +125,22 @@ function RestForm() {
             </Button>
           </Box>
 
-          <Box component="div">
-            <Tabs
-              value={activeTab}
-              className=""
-              onChange={handleChange}
-              aria-label="basic tabs example"
-              TabIndicatorProps={{ className: 'bg-orange-500 mb-0 h-[2px] bottom-2' }}
-            >
-              <Tab label="Params" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(0)} />
-              <Tab label="Headers" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(1)} />
-              <Tab label="Body" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(2)} />
-            </Tabs>
-          </Box>
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            aria-label="restfull request tabs"
+            TabIndicatorProps={{
+              className: 'bg-orange-500 mb-0 h-[2px] bottom-2',
+            }}
+          >
+            <Tab label="Params" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(0)} />
+            <Tab label="Headers" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(1)} />
+            <Tab label="Body" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(2)} />
+          </Tabs>
 
           <CustomTabPanel value={activeTab} index={0}>
             <Typography className="text-sm">Query Params</Typography>
-            <InputTable inputName="queryParams" />
+            <InputTable inputName="params" />
           </CustomTabPanel>
 
           <CustomTabPanel value={activeTab} index={1}>
@@ -142,17 +151,22 @@ function RestForm() {
           <CustomTabPanel value={activeTab} index={2}>
             <Controller
               render={({ field }) => (
-                <CodeMirror
+                <Editor
                   {...field}
-                  width="100%"
-                  height="200"
-                  theme={vscodeDark}
-                  extensions={[json()]}
-                  basicSetup={{
-                    foldGutter: false,
-                    dropCursor: false,
-                    allowMultipleSelections: false,
-                    indentOnInput: false,
+                  height="300px"
+                  defaultLanguage="json"
+                  theme="vs-dark"
+                  options={{
+                    minimap: {
+                      enabled: false,
+                    },
+                    lineNumbersMinChars: 4,
+                    wordSeparators: '~!@#$%^&*()-=+[{]}|;:\'",.<>/?',
+                    wordWrap: 'on',
+                    wordWrapBreakAfterCharacters: '\t})]?|&,;',
+                    wordWrapBreakBeforeCharacters: '{([+',
+                    wordWrapColumn: 80,
+                    wrappingIndent: 'indent',
                   }}
                 />
               )}
@@ -166,4 +180,5 @@ function RestForm() {
     </section>
   );
 }
+
 export default RestForm;

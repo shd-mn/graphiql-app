@@ -1,4 +1,4 @@
-export type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
+import { Method } from '@/types';
 
 export const methods: { name: Method; color: string }[] = [
   { name: 'GET', color: 'text-green-500' },
@@ -9,9 +9,3 @@ export const methods: { name: Method; color: string }[] = [
   { name: 'HEAD', color: 'text-green-700' },
   { name: 'OPTIONS', color: 'text-pink-500' },
 ];
-
-export type QueryParam = {
-  isChecked?: boolean;
-  key?: string;
-  value?: string;
-};
