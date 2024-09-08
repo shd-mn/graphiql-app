@@ -15,7 +15,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     if (
       !user &&
       !loading &&
-      (pathname === routes.restfull || pathname == routes.graphql || pathname === routes.histor)
+      (pathname === routes.restfull || pathname == routes.graphql || pathname === routes.history)
     ) {
       router.push(routes.login);
     }
@@ -29,7 +29,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     (user && !loading && (pathname === routes.signup || pathname === routes.login)) ||
     (!user &&
       !loading &&
-      (pathname === routes.restfull || pathname == routes.graphql || pathname === routes.histor)) ? (
+      (pathname === routes.restfull || pathname == routes.graphql || pathname === routes.history)) ? (
     <div className="flex h-screen w-screen items-center justify-center">
       <span>...loading</span>
     </div>
