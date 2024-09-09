@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import { StoreProvider } from './StoreProvider';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { Inter } from 'next/font/google';
+import { Toaster } from 'sonner';
+import PrivateRoute from '@/components/PrivateRoute';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { StyledEngineProvider } from '@mui/material/styles';
 import './globals.css';
-import PrivateRoute from '@/components/PrivateRoute';
-import { Toaster } from 'sonner';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -27,13 +27,11 @@ export default function RootLayout({
         <StoreProvider>
           <CssBaseline />
           <AppRouterCacheProvider options={{ key: 'css' }}>
-            <PrivateRoute>
-              <StyledEngineProvider injectFirst>
-                <Header />
-                {children}
-                <Footer />
-                <Toaster expand={false} richColors closeButton duration={5000} className="bottom-24" />
-              </StyledEngineProvider>
+            <StyledEngineProvider injectFirst>
+              <Header />
+              <PrivateRoute>{children}</PrivateRoute>
+              <Footer />
+            </StyledEngineProvider>
             <Toaster expand={false} richColors closeButton duration={3000} className="bottom-24" />
           </AppRouterCacheProvider>
         </StoreProvider>
