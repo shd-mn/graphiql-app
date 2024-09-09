@@ -3,9 +3,8 @@ import { combineSlices, configureStore } from '@reduxjs/toolkit';
 import { restfullSlice } from './features/restfullClient/restfullSlice';
 import { mainSlice } from './features/mainSlice';
 import { graphiqlSlice } from '@/redux/features/graphiqlClient/graphiqlSlice';
-import { toastSlice } from '@/redux/features/toastMessage/toastSlice';
 
-const rootReducer = combineSlices(mainSlice, restfullSlice, graphiqlSlice, toastSlice);
+const rootReducer = combineSlices(mainSlice, restfullSlice, graphiqlSlice);
 
 export type RootState = ReturnType<typeof rootReducer>;
 
