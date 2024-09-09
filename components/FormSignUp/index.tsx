@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { SignUpData } from '@/interfaces/auth.interface';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -23,14 +24,12 @@ import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } 
 import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
 import { FirebaseError } from '@firebase/util';
-import { useAppDispatch } from '@/redux/hooks';
-import { setMessage } from '@/redux/features/toastMessage/toastSlice';
+import { toast } from 'sonner';
 import { toastMessages } from '@/constants/toastMessages';
 
 function FormSignUp() {
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
-  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -45,16 +44,16 @@ function FormSignUp() {
       const userCredential = await createUserWithEmailAndPassword(auth, data.login, data.password);
       await logout();
       await updateProfile(userCredential.user, { displayName: data.name });
-      dispatch(setMessage({ message: toastMessages.confirmEmail, type: 'warning' }));
+      toast.warning(toastMessages.confirmEmail);
       await sendEmailVerification(userCredential.user);
       router.push(routes.home);
-      setTimeout(() => dispatch(setMessage({ message: toastMessages.successSignUp, type: 'success' })), 4000);
+      setTimeout(() => toast.success(toastMessages.successSignUp), 4000);
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/email-already-in-use') {
-        dispatch(setMessage({ message: toastMessages.userAlreadyExist, type: 'warning' }));
+        toast.warning(toastMessages.userAlreadyExist);
         router.push(routes.login);
       } else {
-        dispatch(setMessage({ message: toastMessages.errorSignUp, type: 'error' }));
+        toast.error(toastMessages.errorSignUp);
       }
     }
   };
@@ -132,7 +131,9 @@ function FormSignUp() {
       </Button>
       <div className="flex flex-col items-center">
         <p className="m-0">If you already have an account, please</p>
-        <Button href={routes.login}>Sign in</Button>
+        <Link href={routes.login} className="text-blue-500 hover:text-blue-700">
+          Sign in
+        </Link>
       </div>
     </form>
   );

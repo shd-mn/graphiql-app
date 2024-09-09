@@ -1,9 +1,8 @@
 'use client';
-
 import { auth } from '@/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { Button } from '@mui/material';
 import { routes } from '@/constants/routes';
+import Link from 'next/link';
 
 const Welcome = () => {
   const [user] = useAuthState(auth);
@@ -15,27 +14,27 @@ const Welcome = () => {
           <div>
             <h2 className="text-center">Welcome!</h2>
             <div className="flex gap-2">
-              <Button href={routes.login} color="inherit" variant="outlined">
+              <Link href={routes.login} className="text-blue-500 hover:text-blue-700">
                 Sign In
-              </Button>
-              <Button href={routes.signup} color="inherit" variant="outlined">
+              </Link>
+              <Link href={routes.signup} className="text-blue-500 hover:text-blue-700">
                 Sign Up
-              </Button>
+              </Link>
             </div>
           </div>
         ) : (
           <div>
             <h2 className="text-center">Welcome Back, {user.displayName}!</h2>
             <div className="flex gap-2">
-              <Button href={routes.restfull} color="inherit" variant="outlined">
+              <Link href={routes.restfull} className="text-blue-500 hover:text-blue-700">
                 REST Client
-              </Button>
-              <Button href={routes.graphql} color="inherit" variant="outlined">
+              </Link>
+              <Link href={routes.graphql} className="text-blue-500 hover:text-blue-700">
                 GraphiQL Client
-              </Button>
-              <Button href={routes.history} color="inherit" variant="outlined">
+              </Link>
+              <Link href={routes.history} className="text-blue-500 hover:text-blue-700">
                 History
-              </Button>
+              </Link>
             </div>
           </div>
         )}

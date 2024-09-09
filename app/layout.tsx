@@ -8,8 +8,7 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import './globals.css';
 import PrivateRoute from '@/components/PrivateRoute';
-import ToastMessage from '@/components/ToastMessage';
-
+import { Toaster } from 'sonner';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -30,11 +29,10 @@ export default function RootLayout({
           <AppRouterCacheProvider options={{ key: 'css' }}>
             <PrivateRoute>
               <StyledEngineProvider injectFirst>
-                <ToastMessage>
-                  <Header />
-                  {children}
-                  <Footer />
-                </ToastMessage>
+                <Header />
+                {children}
+                <Footer />
+                <Toaster expand={false} richColors closeButton duration={5000} className="bottom-24" />
               </StyledEngineProvider>
             </PrivateRoute>
           </AppRouterCacheProvider>

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { SignInData } from '@/interfaces/auth.interface';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -22,14 +23,12 @@ import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
 import { FirebaseError } from '@firebase/util';
-import { useAppDispatch } from '@/redux/hooks';
-import { setMessage } from '@/redux/features/toastMessage/toastSlice';
 import { toastMessages } from '@/constants/toastMessages';
+import { toast } from 'sonner';
 
 function FormSignIn() {
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
-  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -44,17 +43,17 @@ function FormSignIn() {
       const user = await signInWithEmailAndPassword(auth, data.login, data.password);
       if (!user.user.emailVerified) {
         await logout();
-        dispatch(setMessage({ message: toastMessages.confirmEmail, type: 'warning' }));
+        toast.info(toastMessages.confirmEmail);
         router.push(routes.login);
       } else {
-        dispatch(setMessage({ message: toastMessages.successSignIn, type: 'success' }));
+        toast.success(toastMessages.successSignIn);
         router.push(routes.home);
       }
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/invalid-credential') {
-        dispatch(setMessage({ message: toastMessages.userNotFound, type: 'error' }));
+        toast.error(toastMessages.userNotFound);
       } else {
-        dispatch(setMessage({ message: toastMessages.errorSignIn, type: 'error' }));
+        toast.error(toastMessages.errorSignIn);
       }
     }
   };
@@ -102,7 +101,9 @@ function FormSignIn() {
       </Button>
       <div className="flex flex-col items-center">
         <p className="m-0">If you don&apos;t have an account, please</p>
-        <Button href={routes.signup}>Sign up</Button>
+        <Link href={routes.signup} className="text-blue-500 hover:text-blue-700">
+          Sign up
+        </Link>
       </div>
     </form>
   );
