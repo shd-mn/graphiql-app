@@ -34,7 +34,7 @@ export default function RootLayout({
                 <Footer />
                 <Toaster expand={false} richColors closeButton duration={5000} className="bottom-24" />
               </StyledEngineProvider>
-            </PrivateRoute>
+            <Toaster expand={false} richColors closeButton duration={3000} className="bottom-24" />
           </AppRouterCacheProvider>
         </StoreProvider>
       </body>
