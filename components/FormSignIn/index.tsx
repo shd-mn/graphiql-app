@@ -44,7 +44,7 @@ function FormSignIn() {
       if (!user.user.emailVerified) {
         await logout();
         toast.info(toastMessages.confirmEmail);
-        router.push(routes.login);
+        router.push(routes.signin);
       } else {
         toast.success(toastMessages.successSignIn);
         router.push(routes.home);

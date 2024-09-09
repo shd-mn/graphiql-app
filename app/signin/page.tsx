@@ -1,6 +1,6 @@
 import FormSignIn from '@/components/FormSignIn';
 
-function Login() {
+function SignIn() {
   return (
     <main className="flex h-[calc(100vh-6rem)] flex-col items-center justify-center p-3">
       Login
@@ -9,4 +9,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SignIn;

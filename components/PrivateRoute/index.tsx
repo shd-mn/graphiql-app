@@ -13,18 +13,18 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    const publicRoutes = [routes.home, routes.login, routes.signup];
+    const publicRoutes = [routes.home, routes.signin, routes.signup];
 
     if (!loading) {
       if (!user && !publicRoutes.includes(pathname)) {
-        router.push(routes.login);
+        router.push(routes.signin);
       } else if (user && publicRoutes.includes(pathname)) {
         router.push(routes.home);
       }
     }
   }, [user, loading, pathname, router]);
 
-  if (loading || (!user && pathname !== routes.home && pathname !== routes.login && pathname !== routes.signup)) {
+  if (loading || (!user && pathname !== routes.home && pathname !== routes.signin && pathname !== routes.signup)) {
     return (
       <div className="flex h-[calc(100vh-6rem)] w-screen items-center justify-center">
         <Elipsis />

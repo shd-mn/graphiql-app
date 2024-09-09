@@ -51,7 +51,7 @@ function FormSignUp() {
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/email-already-in-use') {
         toast.warning(toastMessages.userAlreadyExist);
-        router.push(routes.login);
+        router.push(routes.signin);
       } else {
         toast.error(toastMessages.errorSignUp);
       }
@@ -131,7 +131,7 @@ function FormSignUp() {
       </Button>
       <div className="flex flex-col items-center">
         <p className="m-0">If you already have an account, please</p>
-        <Link href={routes.login} className="text-blue-500 hover:text-blue-700">
+        <Link href={routes.signin} className="text-blue-500 hover:text-blue-700">
           Sign in
         </Link>
       </div>

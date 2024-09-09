@@ -1,6 +1,6 @@
 export const routes = {
   home: '/',
-  login: '/login',
+  signin: '/signin',
   signup: '/signup',
   graphql: '/GRAPHQL',
   restfull: '/rest',

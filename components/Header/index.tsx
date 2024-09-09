@@ -31,7 +31,7 @@ function Header() {
         </Button>
         {!user ? (
           <>
-            <Link href={routes.login}>Sign In</Link>
+            <Link href={routes.signin}>Sign In</Link>
             <Link href={routes.signup}>Sign Up</Link>
           </>
         ) : (

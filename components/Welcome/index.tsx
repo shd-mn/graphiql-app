@@ -14,7 +14,7 @@ const Welcome = () => {
           <div>
             <h2 className="text-center">Welcome!</h2>
             <div className="flex gap-2">
-              <Link href={routes.login} className="text-blue-500 hover:text-blue-700">
+              <Link href={routes.signin} className="text-blue-500 hover:text-blue-700">
                 Sign In
               </Link>
               <Link href={routes.signup} className="text-blue-500 hover:text-blue-700">
