@@ -12,30 +12,26 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (
-      !user &&
-      !loading &&
-      (pathname === routes.restfull || pathname == routes.graphql || pathname === routes.history)
-    ) {
-      router.push(routes.login);
-    }
+    const publicRoutes = [routes.home, routes.login, routes.signup];
 
-    if (user && !loading && (pathname === routes.signup || pathname === routes.login)) {
-      router.push(routes.home);
+    if (!loading) {
+      if (!user && !publicRoutes.includes(pathname)) {
+        router.push(routes.login);
+      } else if (user && publicRoutes.includes(pathname)) {
+        router.push(routes.home);
+      }
     }
   }, [user, loading, pathname, router]);
 
-  return loading ||
-    (user && !loading && (pathname === routes.signup || pathname === routes.login)) ||
-    (!user &&
-      !loading &&
-      (pathname === routes.restfull || pathname == routes.graphql || pathname === routes.history)) ? (
-    <div className="flex h-screen w-screen items-center justify-center">
-      <span>...loading</span>
-    </div>
-  ) : (
-    <>{children}</>
-  );
+  if (loading || (!user && pathname !== routes.home && pathname !== routes.login && pathname !== routes.signup)) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center">
+        <iframe src="https://lottie.host/embed/ad300dda-56b0-458a-90a4-b602880bb0e8/16aZWPxQqa.json"></iframe>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
 };
 
 export default PrivateRoute;
