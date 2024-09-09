@@ -5,6 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase';
 import { usePathname, useRouter } from 'next/navigation';
 import { routes } from '@/constants/routes';
+import Elipsis from '../Ellipsis';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const [user, loading] = useAuthState(auth);
@@ -25,8 +26,8 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (loading || (!user && pathname !== routes.home && pathname !== routes.login && pathname !== routes.signup)) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center">
-        <iframe src="https://lottie.host/embed/ad300dda-56b0-458a-90a4-b602880bb0e8/16aZWPxQqa.json"></iframe>
+      <div className="flex h-[calc(100vh-6rem)] w-screen items-center justify-center">
+        <Elipsis />
       </div>
     );
   }
