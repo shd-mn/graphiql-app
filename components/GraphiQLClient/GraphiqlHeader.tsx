@@ -33,13 +33,12 @@ const GraphiqlHeader = () => {
   };
 
   return (
-    <div className="flex flex-col">
-      {JSON.stringify(headers)}
-      <form onSubmit={handleSubmit(onFormSubmit)}>
+    <div className="flex flex-col p-4">
+      <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col gap-2">
         {fields.map((field, index) => (
-          <div key={field.id}>
-            <TextField label="Header Key" variant="outlined" {...register(`headers.${index}.key`)} />
-            <TextField label="Header Value" variant="outlined" {...register(`headers.${index}.value`)} />
+          <div key={field.id} className="flex gap-2">
+            <TextField label="Header Key" variant="outlined" size="small" {...register(`headers.${index}.key`)} />
+            <TextField label="Header Value" variant="outlined" size="small" {...register(`headers.${index}.value`)} />
             {fields.length > 1 ? (
               <IconButton aria-label="delete" onClick={() => removeField(index)}>
                 <DeleteIcon />
@@ -47,12 +46,14 @@ const GraphiqlHeader = () => {
             ) : null}
           </div>
         ))}
-        <IconButton aria-label="add" onClick={addNewField}>
-          <AddIcon />
-        </IconButton>
-        <Button type="submit" disabled={Object.keys(formState.dirtyFields).length === 0}>
-          Set Headers
-        </Button>
+        <div className="flex">
+          <IconButton aria-label="add" onClick={addNewField}>
+            <AddIcon />
+          </IconButton>
+          <Button type="submit" disabled={Object.keys(formState.dirtyFields).length === 0}>
+            Set Headers
+          </Button>
+        </div>
       </form>
     </div>
   );

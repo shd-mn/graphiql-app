@@ -4,32 +4,24 @@ import { TextField } from '@mui/material';
 import { selectAll, setSdlUrl, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { FormState, UseFormRegister } from 'react-hook-form';
 import { UrlGraphql } from '@/interfaces/url-graphql.interfase';
-import { urlValidationSchema } from '@/validation/url-graphql.validation';
 
-const UrlForm = () => {
+interface UrlFormInterface {
+  errors: FormState<UrlGraphql>['errors'];
+  register: UseFormRegister<UrlGraphql>;
+}
+
+const UrlSection = ({ register, errors }: UrlFormInterface) => {
   const { url, sdlUrl } = useAppSelector(selectAll);
   const dispatch = useAppDispatch();
 
   const changeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-    void trigger('endpoint');
-    console.log(e.target.value, 'target');
-    console.log('submitted', isSubmitted);
     dispatch(setUrl(e.target.value));
   };
 
-  const {
-    register,
-    trigger,
-    formState: { errors, isSubmitted },
-  } = useForm<UrlGraphql>({
-    resolver: yupResolver(urlValidationSchema),
-  });
-
   return (
-    <form className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <TextField
         error={!!errors.endpoint}
         helperText={errors.endpoint ? errors.endpoint.message : ' '}
@@ -37,6 +29,7 @@ const UrlForm = () => {
         label="Endpoint"
         variant="outlined"
         value={url}
+        size="small"
         {...register('endpoint', {
           onChange: changeUrl,
         })}
@@ -47,10 +40,11 @@ const UrlForm = () => {
         label="SDL"
         variant="outlined"
         value={sdlUrl || url + '?sdl'}
+        size="small"
         {...register('sdl', { onChange: (e) => dispatch(setSdlUrl(e.target.value)) })}
       />
-    </form>
+    </div>
   );
 };
 
-export default UrlForm;
+export default UrlSection;

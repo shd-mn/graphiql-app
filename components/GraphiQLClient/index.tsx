@@ -5,7 +5,8 @@ import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs } from
 import { Box } from '@mui/system';
 import CustomTabPanel from '@/components/RestClient/Form/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { selectAll, setQuery, setResponse } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { selectAll, setQuery } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { setResponse } from '@/redux/features/mainSlice';
 import { useRouter } from 'next/navigation';
 import { GraphiQLProvider, QueryEditor } from '@graphiql/react';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -15,11 +16,18 @@ import PrettifyButton from '@/components/GraphiQLClient/PrettifyButton';
 import VariablesSection from '@/components/GraphiQLClient/VariablesSection';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { routes } from '@/constants/routes';
-import UrlForm from '@/components/GraphiQLClient/UrlForm';
+import { useForm } from 'react-hook-form';
+import { UrlGraphql } from '@/interfaces/url-graphql.interfase';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { urlValidationSchema } from '@/validation/url-graphql.validation';
+import UrlSection from '@/components/GraphiQLClient/UrlSection';
+import { toast } from 'sonner';
+import { toastMessages } from '@/constants/toastMessages';
+import { fetcher } from '@/services/response';
 
 const GraphiQLClient = () => {
   const { query, variables, url, headers } = useAppSelector(selectAll);
-  const fetcher = useMemo(() => createGraphiQLFetcher({ url }), [url]);
+  const gqlFetcher = useMemo(() => createGraphiQLFetcher({ url }), [url]);
   const [value, setValue] = React.useState(0);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -49,7 +57,7 @@ const GraphiQLClient = () => {
         /^\s*(mutation|query)\s*[a-zA-Z0-9_]*\s*\([^)]+\)\s*\{/,
       );
 
-      const res = await fetch(url, {
+      const res = await fetcher(url, {
         method: 'POST',
         headers: reqHeaders,
         body: JSON.stringify({
@@ -58,19 +66,24 @@ const GraphiQLClient = () => {
           variables: variables ? JSON.parse(variables) : {},
         }),
       });
-      const data = await res.json();
-      dispatch(setResponse(data));
-      return data;
+      console.log(res, 'res');
+      dispatch(setResponse(res));
+      return res;
     } catch (error) {
-      dispatch(setResponse('Failed to fetch data'));
+      toast.error(error as string);
     }
   };
 
   const sendQuery = () => {
-    executeQuery().then((data) => {
-      const a = Buffer.from(JSON.stringify(data.data), 'utf-8').toString('base64');
-      router.push(`${routes.graphql}/${a}`);
-    });
+    if (isValid) {
+      executeQuery().then((data) => {
+        const buffer = data ? Buffer.from(JSON.stringify(data?.data), 'utf-8').toString('base64') : '';
+        // todo: add necessary parameters
+        router.push(`${routes.graphql}/${buffer}`);
+      });
+    } else {
+      toast.error(toastMessages.errorSendQueryGraphiQL);
+    }
   };
 
   function a11yProps(index: number) {
@@ -81,45 +94,58 @@ const GraphiQLClient = () => {
   }
 
   function edit(value: string) {
-    console.log(value);
     dispatch(setQuery(value));
   }
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<UrlGraphql>({
+    resolver: yupResolver(urlValidationSchema),
+  });
+
   return (
-    <GraphiQLProvider fetcher={fetcher}>
-      <div className="graphiql-container">
-        <section className="p-3">
-          <UrlForm />
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-              <Tab label="Query" {...a11yProps(0)} />
-              <Tab label="Headers" {...a11yProps(1)} />
-              <Tab label="Documentation" {...a11yProps(2)} />
-            </Tabs>
-          </Box>
-          <CustomTabPanel value={value} index={0}>
-            <div className="h-96">
-              <PrettifyButton />
-              <QueryEditor onEdit={edit} />
-            </div>
-            <Accordion className="bg-gray-100 text-orange-600">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
-                VARIABLES
-              </AccordionSummary>
-              <AccordionDetails className="h-64">
-                <VariablesSection />
-              </AccordionDetails>
-            </Accordion>
-            <Button onClick={() => sendQuery()}>Send</Button>
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-            <GraphiqlHeader></GraphiqlHeader>
-          </CustomTabPanel>
-          <CustomTabPanel index={2} value={value}>
-            <Documentation></Documentation>
-          </CustomTabPanel>
-        </section>
-      </div>
+    <GraphiQLProvider fetcher={gqlFetcher}>
+      <form onSubmit={handleSubmit(sendQuery)}>
+        <div className="graphiql-container">
+          <section className="px-3 pt-3">
+            <UrlSection errors={errors} register={register} />
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tab label="Query" {...a11yProps(0)} />
+                <Tab label="Headers" {...a11yProps(1)} />
+                <Tab label="Documentation" {...a11yProps(2)} />
+              </Tabs>
+            </Box>
+            <CustomTabPanel value={value} index={0}>
+              <div>
+                <div className="sticky top-0 flex justify-end gap-2">
+                  <PrettifyButton />
+                  <Button onClick={() => sendQuery()} type="submit" variant="contained">
+                    Send
+                  </Button>
+                </div>
+                <QueryEditor onEdit={edit} />
+              </div>
+              <Accordion className="sticky bottom-0 bg-gray-100 text-orange-600">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+                  VARIABLES
+                </AccordionSummary>
+                <AccordionDetails>
+                  <VariablesSection />
+                </AccordionDetails>
+              </Accordion>
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+              <GraphiqlHeader></GraphiqlHeader>
+            </CustomTabPanel>
+            <CustomTabPanel index={2} value={value}>
+              <Documentation></Documentation>
+            </CustomTabPanel>
+          </section>
+        </div>
+      </form>
     </GraphiQLProvider>
   );
 };

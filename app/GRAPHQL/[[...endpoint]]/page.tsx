@@ -27,9 +27,9 @@ import { ResizableGroup, ResizableHandle, ResizablePanel } from '@/components/Re
 
 function GraphQL() {
   return (
-    <main className="flex h-[calc(100vh-8.5rem)] flex-col p-3">
-      <ResizableGroup autoSaveId="restfull" direction="vertical">
-        <ResizablePanel defaultSizePercentage={50} minSizePercentage={15}>
+    <main className="gql flex h-[calc(100vh-6rem)] flex-col p-3">
+      <ResizableGroup autoSaveId="graphql" direction="vertical">
+        <ResizablePanel defaultSizePercentage={50} minSizePercentage={15} id="gql-panel">
           <GraphiQLClient />
         </ResizablePanel>
         <ResizableHandle direction="vertical" />
