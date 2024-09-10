@@ -21,7 +21,7 @@ const GraphiqlHeader = () => {
 
   const onFormSubmit = (headers: { headers: GQLHeader[] }) => {
     dispatch(setHeaders(headers.headers));
-    reset({});
+    reset({ headers: headers.headers });
   };
 
   const removeField = (index: number | number[] | undefined) => {
@@ -34,7 +34,7 @@ const GraphiqlHeader = () => {
 
   return (
     <div className="flex flex-col p-4">
-      <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col gap-2">
+      <form className="flex flex-col gap-2">
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2">
             <TextField label="Header Key" variant="outlined" size="small" {...register(`headers.${index}.key`)} />
@@ -50,7 +50,11 @@ const GraphiqlHeader = () => {
           <IconButton aria-label="add" onClick={addNewField}>
             <AddIcon />
           </IconButton>
-          <Button type="submit" disabled={Object.keys(formState.dirtyFields).length === 0}>
+          <Button
+            type="button"
+            disabled={Object.keys(formState.dirtyFields).length === 0}
+            onClick={handleSubmit(onFormSubmit)}
+          >
             Set Headers
           </Button>
         </div>

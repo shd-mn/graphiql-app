@@ -1,27 +1,19 @@
 'use client';
 
-import { selectSdlUrl, selectUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
-import { useAppSelector } from '@/redux/hooks';
-import { DocExplorer, GraphiQLProvider } from '@graphiql/react';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import { DocExplorer, useSchemaContext } from '@graphiql/react';
 import '@graphiql/react/dist/style.css';
-import { useMemo } from 'react';
 
 const Documentation = () => {
-  const url: string = useAppSelector(selectUrl);
-  const sdlUrl: string = useAppSelector(selectSdlUrl);
-  const fetcher = useMemo(() => createGraphiQLFetcher({ url: sdlUrl || url }), [sdlUrl, url]);
+  const schemaContext = useSchemaContext();
 
   return (
     <>
-      {sdlUrl || url ? (
-        <GraphiQLProvider fetcher={fetcher}>
-          <div className="graphiql-container">
-            <DocExplorer />
-          </div>
-        </GraphiQLProvider>
+      {!schemaContext?.fetchError ? (
+        <div className="graphiql-container">
+          <DocExplorer />
+        </div>
       ) : (
-        <div>There is no url provided</div>
+        <div>There is an error</div>
       )}
     </>
   );
