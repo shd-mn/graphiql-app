@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs, TextField } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs } from '@mui/material';
 import { Box } from '@mui/system';
 import CustomTabPanel from '@/components/RestClient/Form/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { selectAll, setQuery, setResponse, setSdlUrl, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { selectAll, setQuery, setResponse } from '@/redux/features/graphiqlClient/graphiqlSlice';
 import { useRouter } from 'next/navigation';
 import { GraphiQLProvider, QueryEditor } from '@graphiql/react';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -15,9 +15,10 @@ import PrettifyButton from '@/components/GraphiQLClient/PrettifyButton';
 import VariablesSection from '@/components/GraphiQLClient/VariablesSection';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { routes } from '@/constants/routes';
+import UrlForm from '@/components/GraphiQLClient/UrlForm';
 
 const GraphiQLClient = () => {
-  const { query, variables, url, sdlUrl, headers } = useAppSelector(selectAll);
+  const { query, variables, url, headers } = useAppSelector(selectAll);
   const fetcher = useMemo(() => createGraphiQLFetcher({ url }), [url]);
   const [value, setValue] = React.useState(0);
   const router = useRouter();
@@ -72,10 +73,6 @@ const GraphiQLClient = () => {
     });
   };
 
-  const changeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setUrl(e.target.value));
-  };
-
   function a11yProps(index: number) {
     return {
       id: `qraphql-tab-${index}`,
@@ -92,16 +89,7 @@ const GraphiQLClient = () => {
     <GraphiQLProvider fetcher={fetcher}>
       <div className="graphiql-container">
         <section className="p-3">
-          <div className="flex flex-col gap-2">
-            <TextField id="outlined-basic" label="Endpoint" variant="outlined" value={url} onChange={changeUrl} />
-            <TextField
-              id="outlined-basic"
-              label="SDL"
-              variant="outlined"
-              value={sdlUrl || url + '?sdl'}
-              onChange={(e) => dispatch(setSdlUrl(e.target.value))}
-            />
-          </div>
+          <UrlForm />
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
               <Tab label="Query" {...a11yProps(0)} />
