@@ -7,13 +7,10 @@ function VariablesSection() {
   const editor = useVariableEditor();
   const state = useVariablesEditorState();
 
-  // todo: use fetchError for documentation
-  // const schemaContext = useSchemaContext();
-
   if (editor && state) {
-    dispatch(setVariables(state[0]));
+    setTimeout(() => dispatch(setVariables(state[0])));
   }
-  return <VariableEditor></VariableEditor>;
+  return <VariableEditor />;
 }
 
 export default VariablesSection;

@@ -37,10 +37,16 @@ const GraphiQLClient = () => {
     setValue(newValue);
   };
 
-  const executeQuery = async () => {
+  function getFilteredQuery(query: string): string {
     const lines = query.split('\n');
     const filteredLines = lines.filter((line) => !line.trim().startsWith('#'));
-    const filteredQuery = filteredLines.join('\n');
+    return filteredLines.join('\n');
+  }
+
+  const executeQuery = async () => {
+    // const lines = query.split('\n');
+    // const filteredLines = lines.filter((line) => !line.trim().startsWith('#'));
+    const filteredQuery = getFilteredQuery(query);
     const requestHeaders = Object.fromEntries(headers.map((header) => [header.key, header.value]).reverse());
 
     const reqHeaders = headers
@@ -76,6 +82,7 @@ const GraphiQLClient = () => {
   const sendQuery = () => {
     if (isValid) {
       executeQuery().then((data) => {
+        console.log(getFilteredQuery(query));
         const encodedBody = data ? textToBase64(JSON.stringify(data)) : '';
         const encodedUrl = textToBase64(url);
         const headersForUrl = stringFromHeaders(headers);
