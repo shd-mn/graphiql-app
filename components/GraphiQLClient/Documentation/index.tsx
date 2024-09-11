@@ -13,7 +13,7 @@ const Documentation = () => {
           <DocExplorer />
         </div>
       ) : (
-        <div>There is an error</div>
+        ''
       )}
     </>
   );

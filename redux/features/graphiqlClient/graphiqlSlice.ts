@@ -42,9 +42,6 @@ export const graphiqlSlice = createSlice({
     setSdlUrl: create.reducer((state, action: PayloadAction<string>) => {
       state.sdlUrl = action.payload;
     }),
-    setResponse: create.reducer((state, action: PayloadAction<string>) => {
-      state.response = action.payload;
-    }),
   }),
 
   selectors: {
@@ -54,10 +51,9 @@ export const graphiqlSlice = createSlice({
     selectVariables: (graphiql) => graphiql.variables,
     selectUrl: (graphiql) => graphiql.url,
     selectSdlUrl: (graphiql) => graphiql.sdlUrl,
-    selectResponse: (graphiql) => graphiql.response,
   },
 });
 
-export const { setQuery, setVariables, setHeaders, setUrl, setSdlUrl, setResponse } = graphiqlSlice.actions;
+export const { setQuery, setVariables, setHeaders, setUrl, setSdlUrl } = graphiqlSlice.actions;
 
-export const { selectAll, selectHeaders, selectUrl, selectSdlUrl } = graphiqlSlice.selectors;
+export const { selectAll, selectHeaders } = graphiqlSlice.selectors;

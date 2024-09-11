@@ -25,6 +25,8 @@ import { toast } from 'sonner';
 import { toastMessages } from '@/constants/toastMessages';
 import { fetcher } from '@/services/response';
 import { a11yProps } from '@/utils/a11yProps';
+import { getFilteredQuery } from '@/utils/getiFlteredQuery';
+import { textToBase64 } from '@/utils/coderBase64';
 
 const GraphiQLClient = () => {
   const { query, variables, url, headers } = useAppSelector(selectAll);
@@ -37,15 +39,7 @@ const GraphiQLClient = () => {
     setValue(newValue);
   };
 
-  function getFilteredQuery(query: string): string {
-    const lines = query.split('\n');
-    const filteredLines = lines.filter((line) => !line.trim().startsWith('#'));
-    return filteredLines.join('\n');
-  }
-
   const executeQuery = async () => {
-    // const lines = query.split('\n');
-    // const filteredLines = lines.filter((line) => !line.trim().startsWith('#'));
     const filteredQuery = getFilteredQuery(query);
     const requestHeaders = Object.fromEntries(headers.map((header) => [header.key, header.value]).reverse());
 
@@ -81,20 +75,17 @@ const GraphiQLClient = () => {
 
   const sendQuery = () => {
     if (isValid) {
-      executeQuery().then((data) => {
-        console.log(getFilteredQuery(query));
-        const encodedBody = data ? textToBase64(JSON.stringify(data)) : '';
-        const encodedUrl = textToBase64(url);
-        const headersForUrl = stringFromHeaders(headers);
-        router.push(`${routes.graphql}/${encodedUrl}/${encodedBody}${headersForUrl}`);
-      });
+      void executeQuery();
     } else {
       toast.error(toastMessages.errorSendQueryGraphiQL);
     }
   };
 
-  function textToBase64(text: string) {
-    return Buffer.from(text, 'utf-8').toString('base64');
+  function setUrl() {
+    const encodedBody = textToBase64(JSON.stringify(getFilteredQuery(query)));
+    const encodedUrl = textToBase64(url);
+    const headersForUrl = stringFromHeaders(headers);
+    router.push(`${routes.graphql}/${encodedUrl}/${encodedBody}${headersForUrl}`);
   }
 
   function stringFromHeaders(headers: GQLHeader[]) {
@@ -121,24 +112,23 @@ const GraphiQLClient = () => {
             <form>
               <UrlSection errors={errors} register={register} />
             </form>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Box>
               <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                <Tab label="Query" {...a11yProps(0)} />
+                <Tab label="Query" {...a11yProps(0)} className="h-12" />
                 <Tab label="Headers" {...a11yProps(1)} />
-                <Tab label="Documentation" {...a11yProps(2)} />
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
               <div>
-                <div className="sticky top-0 z-10 flex justify-end gap-2">
+                <div className="sticky top-0 z-10 flex justify-center gap-2">
                   <PrettifyButton />
                   <Button onClick={handleSubmit(sendQuery)} type="submit" variant="contained">
                     Send
                   </Button>
                 </div>
-                <div className="flex">
+                <div className="flex" onBlur={setUrl}>
                   <QueryEditor onEdit={edit} />
-                  <Documentation></Documentation>
+                  <Documentation />
                 </div>
               </div>
               <Accordion className="sticky bottom-0 bg-gray-100 text-orange-600">
@@ -151,10 +141,7 @@ const GraphiQLClient = () => {
               </Accordion>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <GraphiqlHeader></GraphiqlHeader>
-            </CustomTabPanel>
-            <CustomTabPanel index={2} value={value}>
-              <Documentation></Documentation>
+              <GraphiqlHeader />
             </CustomTabPanel>
           </section>
         </div>

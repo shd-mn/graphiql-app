@@ -11,7 +11,11 @@ function PrettifyButton() {
     }
   };
 
-  return <Button onClick={handlePrettifyClick}>Prettify query</Button>;
+  return (
+    <Button onClick={handlePrettifyClick} variant="outlined">
+      Prettify query
+    </Button>
+  );
 }
 
 export default PrettifyButton;
