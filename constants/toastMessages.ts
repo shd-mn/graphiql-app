@@ -8,4 +8,6 @@ export const toastMessages = {
   userAlreadyExist: 'User already exist. Please sign in.',
   signOutSuccess: 'You are sign out.',
   errorSignOut: 'Failed to sign out. Please try again.',
+  errorSendQueryGraphiQL: 'Url not provided. Please provide endpoint url.',
+  prettifyError: 'Failed to prettify query.',
 };

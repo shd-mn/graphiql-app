@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs, TextField } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs } from '@mui/material';
 import { Box } from '@mui/system';
 import CustomTabPanel from '@/components/RestClient/Form/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { selectAll, setQuery, setResponse, setSdlUrl, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { setResponse } from '@/redux/features/mainSlice';
 import { useRouter } from 'next/navigation';
 import { GraphiQLProvider, QueryEditor } from '@graphiql/react';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -14,25 +15,39 @@ import Documentation from '@/components/GraphiQLClient/Documentation';
 import PrettifyButton from '@/components/GraphiQLClient/PrettifyButton';
 import VariablesSection from '@/components/GraphiQLClient/VariablesSection';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { routes } from '@/constants/routes';
+import { useForm } from 'react-hook-form';
+import { UrlGraphql } from '@/interfaces/url-graphql.interfase';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { urlValidationSchema } from '@/validation/url-graphql.validation';
+import UrlSection from '@/components/GraphiQLClient/UrlSection';
+import { toast } from 'sonner';
+import { toastMessages } from '@/constants/toastMessages';
+import { fetcher } from '@/services/response';
+import { a11yProps } from '@/utils/a11yProps';
+import { getFilteredQuery } from '@/utils/getiFlteredQuery';
+import { setBrowserUrl } from '@/utils/setBrowserUrl';
 
-const GraphiQLClient = () => {
-  const { query, variables, url, sdlUrl, headers } = useAppSelector(selectAll);
-  const fetcher = useMemo(() => createGraphiQLFetcher({ url }), [url]);
+interface GraphiQLClientProps {
+  queryinput?: string;
+  headersinput: Record<string, string>;
+  urlinput?: string;
+}
+
+const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientProps) => {
+  const { query, variables, url, headers } = useAppSelector(selectAll);
+  const gqlFetcher = useMemo(() => createGraphiQLFetcher({ url }), [url]);
   const [value, setValue] = React.useState(0);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  setTimeout(() => dispatch(setUrl(urlinput || url)));
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   const executeQuery = async () => {
-    const lines = query.split('\n');
-    const filteredLines = lines.filter((line) => !line.trim().startsWith('#'));
-    const filteredQuery = filteredLines.join('\n');
+    const filteredQuery = getFilteredQuery(query);
     const requestHeaders = Object.fromEntries(headers.map((header) => [header.key, header.value]).reverse());
-    console.log(requestHeaders);
 
     const reqHeaders = headers
       ? requestHeaders
@@ -48,7 +63,7 @@ const GraphiQLClient = () => {
         /^\s*(mutation|query)\s*[a-zA-Z0-9_]*\s*\([^)]+\)\s*\{/,
       );
 
-      const res = await fetch(url, {
+      const res = await fetcher(url, {
         method: 'POST',
         headers: reqHeaders,
         body: JSON.stringify({
@@ -57,80 +72,78 @@ const GraphiQLClient = () => {
           variables: variables ? JSON.parse(variables) : {},
         }),
       });
-      const data = await res.json();
-      dispatch(setResponse(data));
-      return data;
+      dispatch(setResponse(res));
+      return res;
     } catch (error) {
-      dispatch(setResponse('Failed to fetch data'));
+      toast.error(error as string);
     }
   };
 
   const sendQuery = () => {
-    executeQuery().then((data) => {
-      const a = Buffer.from(JSON.stringify(data.data), 'utf-8').toString('base64');
-      router.push(`${routes.graphql}/${a}`);
-    });
+    if (isValid) {
+      void executeQuery();
+    } else {
+      toast.error(toastMessages.errorSendQueryGraphiQL);
+    }
   };
 
-  const changeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setUrl(e.target.value));
+  const updateUrl = () => {
+    router.push(setBrowserUrl(url, query, headers));
   };
-
-  function a11yProps(index: number) {
-    return {
-      id: `qraphql-tab-${index}`,
-      'aria-controls': `qraphql-tabpanel-${index}`,
-    };
-  }
 
   function edit(value: string) {
-    console.log(value);
     dispatch(setQuery(value));
   }
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<UrlGraphql>({
+    resolver: yupResolver(urlValidationSchema),
+  });
+
   return (
-    <GraphiQLProvider fetcher={fetcher}>
-      <div className="graphiql-container">
-        <section className="p-3">
-          <div className="flex flex-col gap-2">
-            <TextField id="outlined-basic" label="Endpoint" variant="outlined" value={url} onChange={changeUrl} />
-            <TextField
-              id="outlined-basic"
-              label="SDL"
-              variant="outlined"
-              value={sdlUrl || url + '?sdl'}
-              onChange={(e) => dispatch(setSdlUrl(e.target.value))}
-            />
-          </div>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-              <Tab label="Query" {...a11yProps(0)} />
-              <Tab label="Headers" {...a11yProps(1)} />
-              <Tab label="Documentation" {...a11yProps(2)} />
-            </Tabs>
-          </Box>
-          <CustomTabPanel value={value} index={0}>
-            <div className="h-96">
-              <PrettifyButton />
-              <QueryEditor onEdit={edit} />
-            </div>
-            <Accordion className="bg-gray-100 text-orange-600">
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
-                VARIABLES
-              </AccordionSummary>
-              <AccordionDetails className="h-64">
-                <VariablesSection />
-              </AccordionDetails>
-            </Accordion>
-            <Button onClick={() => sendQuery()}>Send</Button>
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-            <GraphiqlHeader></GraphiqlHeader>
-          </CustomTabPanel>
-          <CustomTabPanel index={2} value={value}>
-            <Documentation></Documentation>
-          </CustomTabPanel>
-        </section>
+    <GraphiQLProvider fetcher={gqlFetcher} query={!query ? (queryinput ? queryinput.slice(1, -1) : '') : undefined}>
+      <div>
+        <div className="graphiql-container">
+          <section className="px-3 pt-3">
+            <form>
+              <UrlSection urlinput={urlinput} errors={errors} register={register} />
+            </form>
+            <Box>
+              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tab label="Query" {...a11yProps(0)} className="h-12" />
+                <Tab label="Headers" {...a11yProps(1)} />
+              </Tabs>
+            </Box>
+            <CustomTabPanel value={value} index={0}>
+              <div>
+                <div className="sticky top-0 z-10 flex justify-center gap-2">
+                  <PrettifyButton />
+                  <Button onClick={handleSubmit(sendQuery)} type="submit" variant="contained">
+                    Send
+                  </Button>
+                </div>
+                <div className="flex" onBlur={updateUrl}>
+                  <QueryEditor onEdit={edit} />
+                  <Documentation />
+                </div>
+              </div>
+              <Accordion className="sticky bottom-0 bg-gray-100 text-orange-600">
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
+                  VARIABLES
+                </AccordionSummary>
+                <AccordionDetails>
+                  <VariablesSection />
+                </AccordionDetails>
+              </Accordion>
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+              <GraphiqlHeader headersinput={headersinput} />
+            </CustomTabPanel>
+          </section>
+        </div>
       </div>
     </GraphiQLProvider>
   );

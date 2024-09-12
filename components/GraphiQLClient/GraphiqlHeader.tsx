@@ -3,13 +3,20 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { GQLHeader, selectHeaders, setHeaders } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { GQLHeader, selectAll, setHeaders } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { setBrowserUrl } from '@/utils/setBrowserUrl';
+import { useRouter } from 'next/navigation';
 
-const GraphiqlHeader = () => {
-  const headers = useAppSelector(selectHeaders);
+interface GraphiqlHeaderProps {
+  headersinput: Record<string, string>;
+}
+
+const GraphiqlHeader = ({ headersinput }: GraphiqlHeaderProps) => {
+  const { query, url, headers } = useAppSelector(selectAll);
+  const router = useRouter();
   const { register, handleSubmit, formState, reset, control } = useForm({
     defaultValues: {
-      headers,
+      headers: Object.entries(headersinput).map(([key, value]) => ({ key, value })) || headers,
     },
   });
 
@@ -21,7 +28,8 @@ const GraphiqlHeader = () => {
 
   const onFormSubmit = (headers: { headers: GQLHeader[] }) => {
     dispatch(setHeaders(headers.headers));
-    reset({});
+    void router.push(setBrowserUrl(url, query, headers.headers));
+    reset({ headers: headers.headers });
   };
 
   const removeField = (index: number | number[] | undefined) => {
@@ -33,13 +41,12 @@ const GraphiqlHeader = () => {
   };
 
   return (
-    <div className="flex flex-col">
-      {JSON.stringify(headers)}
-      <form onSubmit={handleSubmit(onFormSubmit)}>
+    <div className="flex flex-col p-4">
+      <form className="flex flex-col gap-2">
         {fields.map((field, index) => (
-          <div key={field.id}>
-            <TextField label="Header Key" variant="outlined" {...register(`headers.${index}.key`)} />
-            <TextField label="Header Value" variant="outlined" {...register(`headers.${index}.value`)} />
+          <div key={field.id} className="flex gap-2">
+            <TextField label="Header Key" variant="outlined" size="small" {...register(`headers.${index}.key`)} />
+            <TextField label="Header Value" variant="outlined" size="small" {...register(`headers.${index}.value`)} />
             {fields.length > 1 ? (
               <IconButton aria-label="delete" onClick={() => removeField(index)}>
                 <DeleteIcon />
@@ -47,12 +54,18 @@ const GraphiqlHeader = () => {
             ) : null}
           </div>
         ))}
-        <IconButton aria-label="add" onClick={addNewField}>
-          <AddIcon />
-        </IconButton>
-        <Button type="submit" disabled={Object.keys(formState.dirtyFields).length === 0}>
-          Set Headers
-        </Button>
+        <div className="flex">
+          <IconButton aria-label="add" onClick={addNewField}>
+            <AddIcon />
+          </IconButton>
+          <Button
+            type="button"
+            disabled={Object.keys(formState.dirtyFields).length === 0}
+            onClick={handleSubmit(onFormSubmit)}
+          >
+            Set Headers
+          </Button>
+        </div>
       </form>
     </div>
   );
