@@ -1,9 +1,9 @@
-import DataTable from '@/components/DataTable';
+import HistoryContainer from '@/components/History';
 
 export default function Hisory() {
   return (
-    <main className="h-[calc(100vh-6rem)]">
-      <DataTable />
+    <main className="flex h-[calc(100vh-6rem)] w-full">
+      <HistoryContainer />
     </main>
   );
 }

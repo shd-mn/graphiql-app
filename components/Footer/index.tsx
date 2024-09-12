@@ -3,16 +3,16 @@ import Link from 'next/link';
 import course_logo from '@/public/assets/rss-logo.svg';
 function Footer() {
   return (
-    <footer className="padding-x flex h-10 items-center justify-between bg-blue-600 text-sm text-white">
-      <ul className="flex gap-2">
+    <footer className="padding-x z-50 flex h-10 items-center justify-between bg-blue-600 text-sm text-white">
+      <ul className="flex gap-3">
         <li>
           <Link href="https://github.com/shd-mn" target="_blank">
-            Shadman Alizada
+            Shadman <span className="hidden sm:inline">Alizada</span>
           </Link>
         </li>
         <li>
           <Link href="https://github.com/olitera" target="_blank">
-            Volha Melayok
+            Volha <span className="hidden sm:inline">Melayok</span>
           </Link>
         </li>
       </ul>
