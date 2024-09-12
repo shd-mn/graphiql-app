@@ -83,7 +83,7 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
     if (isValid) {
       void executeQuery();
     } else {
-      toast.error(toastMessages.errorSendQueryGraphiQL);
+      toast.error(toastMessages.urlNotProvided);
     }
   };
 

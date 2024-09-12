@@ -17,6 +17,7 @@ import { setResponse, setIsLoading } from '@/redux/features/mainSlice';
 import { a11yProps } from '@/utils/a11yProps';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { toast } from 'sonner';
+import { toastMessages } from '@/constants/toastMessages';
 
 export type Inputs = {
   method: HttpMethod;
@@ -87,7 +88,7 @@ function RestForm() {
   };
 
   useEffect(() => {
-    if (errors.url?.type === 'required') toast.error('Url not provided. Please provide endpoint url.');
+    if (errors.url?.type === 'required') toast.error(toastMessages.urlNotProvided);
   }, [errors.url]);
 
   const selectedColor = methods.find((item) => item.name === watch('method'))?.color;
