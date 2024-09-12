@@ -20,7 +20,7 @@ import { routes } from '@/constants/routes';
 import type { DataTableType, Order, RequestType } from '@/types';
 import { useRouter } from 'next/navigation';
 import { generateUrl } from '@/utils/generateUrl';
-import { setAllState } from '@/redux/features/restfullClient/restfullSlice';
+import { setAllState } from '@/redux/features/restfulSlice';
 import { useAppDispatch } from '@/redux/hooks';
 import { resetResponse } from '@/redux/features/mainSlice';
 
@@ -108,7 +108,7 @@ export default function DataTable() {
         </Typography>
         <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
           It&apos;s empty here. Try:
-          <Button href={routes.restfull} color="inherit" variant="outlined">
+          <Button href={routes.restful} color="inherit" variant="outlined">
             REST Client
           </Button>
           <Button href={routes.graphql} color="inherit" variant="outlined">

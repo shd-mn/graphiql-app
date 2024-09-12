@@ -1,7 +1,7 @@
 'use client';
 
 import { TextField } from '@mui/material';
-import { selectAll, setSdlUrl, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { selectAll, setSdlUrl, setUrl } from '@/redux/features/graphiqlSlice';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { FormState, UseFormRegister } from 'react-hook-form';

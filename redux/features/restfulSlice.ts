@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Method, Param, RequestType } from '@/types';
 
-export interface RestfullSliceState {
+export interface RestfulSliceState {
   id: string;
   method: Method;
   url: string;
@@ -12,7 +12,7 @@ export interface RestfullSliceState {
   date: string;
 }
 
-const initialState: RestfullSliceState = {
+const initialState: RestfulSliceState = {
   id: '',
   method: 'GET',
   url: '',
@@ -23,8 +23,8 @@ const initialState: RestfullSliceState = {
   date: '',
 };
 
-export const restfullSlice = createSlice({
-  name: 'restfull',
+export const restfulSlice = createSlice({
+  name: 'restful',
   initialState,
   reducers: (create) => ({
     setAllState: create.reducer((state, action: PayloadAction<RequestType>) => {
@@ -52,12 +52,12 @@ export const restfullSlice = createSlice({
   }),
 
   selectors: {
-    selectAll: (restfull) => restfull,
-    selectMethod: (restfull) => restfull.method,
-    selectUrl: (restfull) => restfull.url,
+    selectAll: (restful) => restful,
+    selectMethod: (restful) => restful.method,
+    selectUrl: (restful) => restful.url,
   },
 });
 
-export const { setMethod, setAllState, setURL, setQueryParam, setHeaders } = restfullSlice.actions;
+export const { setMethod, setAllState, setURL, setQueryParam, setHeaders } = restfulSlice.actions;
 
-export const { selectAll, selectMethod } = restfullSlice.selectors;
+export const { selectAll, selectMethod } = restfulSlice.selectors;

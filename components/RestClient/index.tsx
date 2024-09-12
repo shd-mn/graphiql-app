@@ -8,7 +8,7 @@ import { methods } from '@/constants/restClientData';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CustomTabPanel from '../UI/CustomTabPanel';
-import { selectAll, setAllState } from '@/redux/features/restfullClient/restfullSlice';
+import { selectAll, setAllState } from '@/redux/features/restfulSlice';
 import type { Method, Param, RequestType } from '@/types';
 import { fetcher } from '@/services/response';
 import { generateUrl } from '@/utils/generateUrl';
@@ -134,7 +134,7 @@ function RestForm() {
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
-            aria-label="restfull request tabs"
+            aria-label="restful request tabs"
             TabIndicatorProps={{
               className: 'bg-orange-500 mb-0 h-[2px] bottom-2',
             }}

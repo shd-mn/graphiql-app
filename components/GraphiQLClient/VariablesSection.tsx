@@ -1,6 +1,6 @@
 import { useVariableEditor, VariableEditor, useVariablesEditorState } from '@graphiql/react';
 import { useAppDispatch } from '@/redux/hooks';
-import { setVariables } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { setVariables } from '@/redux/features/graphiqlSlice';
 
 function VariablesSection() {
   const dispatch = useAppDispatch();

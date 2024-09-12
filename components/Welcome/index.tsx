@@ -26,7 +26,7 @@ const Welcome = () => {
           <div>
             <h2 className="text-center">Welcome Back, {user.displayName}!</h2>
             <div className="flex gap-2">
-              <Link href={routes.restfull} className="text-blue-500 hover:text-blue-700">
+              <Link href={routes.restful} className="text-blue-500 hover:text-blue-700">
                 REST Client
               </Link>
               <Link href={routes.graphql} className="text-blue-500 hover:text-blue-700">

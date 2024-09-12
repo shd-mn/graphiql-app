@@ -1,7 +1,7 @@
 import { textToBase64 } from '@/utils/coderBase64';
 import { getFilteredQuery } from '@/utils/getiFlteredQuery';
 import { routes } from '@/constants/routes';
-import { GQLHeader } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { GQLHeader } from '@/redux/features/graphiqlSlice';
 
 export function stringFromHeaders(headers: GQLHeader[]) {
   return headers.length ? '?' + headers.map((header) => `${header.key}=${header.value}`).join('&') : '';

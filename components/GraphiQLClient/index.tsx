@@ -5,7 +5,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs } from
 import { Box } from '@mui/system';
 import CustomTabPanel from '../UI/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlSlice';
 import { setResponse } from '@/redux/features/mainSlice';
 import { useRouter } from 'next/navigation';
 import { GraphiQLProvider, QueryEditor } from '@graphiql/react';
