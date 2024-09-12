@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase';
@@ -7,14 +6,14 @@ import { usePathname, useRouter } from 'next/navigation';
 import { routes } from '@/constants/routes';
 import Elipsis from '../UI/Ellipsis';
 
+const publicRoutes = [routes.home, routes.signin, routes.signup];
+
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    const publicRoutes = [routes.home, routes.signin, routes.signup];
-
     if (!loading) {
       if (!user && !publicRoutes.includes(pathname)) {
         router.push(routes.signin);

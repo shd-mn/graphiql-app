@@ -8,7 +8,5 @@ describe('Ellipsis Component', () => {
 
     const img = screen.getByAltText('loader');
     expect(img).toBeInTheDocument();
-
-    screen.debug();
   });
 });
