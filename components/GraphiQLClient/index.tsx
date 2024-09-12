@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs } from '@mui/material';
 import { Box } from '@mui/system';
-import CustomTabPanel from '@/components/RestClient/Form/CustomTabPanel';
+import CustomTabPanel from '../Table/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
 import { setResponse } from '@/redux/features/mainSlice';

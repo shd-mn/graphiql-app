@@ -1,13 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
-import InputTable from '@/components/RestClient/Table/InputTable';
+import InputTable from '@/components/Table/InputTable';
 import { Box, Button, FormControl, MenuItem, OutlinedInput, Select, Tab, Tabs, Typography } from '@mui/material';
 import Editor from '@monaco-editor/react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { methods } from '@/constants/restClientData';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import CustomTabPanel from './CustomTabPanel';
+import CustomTabPanel from '../Table/CustomTabPanel';
 import { selectAll, setAllState } from '@/redux/features/restfullClient/restfullSlice';
 import type { Method, Param, RequestType } from '@/types';
 import { fetcher } from '@/services/response';

@@ -1,5 +1,5 @@
-import RestForm from '@/components/RestClient/Form';
-import ResponseSection from '@/components/RestClient/Response';
+import RestForm from '@/components/Form';
+import ResponseSection from '@/components/Response';
 import { ResizableGroup, ResizableHandle, ResizablePanel } from '@/components/Resizable';
 
 export default function RESTfull() {
