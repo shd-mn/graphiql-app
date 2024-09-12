@@ -1,4 +1,4 @@
-import type { DataTableType } from '@/types';
+import type { DataTableType } from '@/types/dataTable.types';
 import { Checkbox, TableBody, TableCell, TableRow } from '@mui/material';
 
 interface DataTableBodyProps {

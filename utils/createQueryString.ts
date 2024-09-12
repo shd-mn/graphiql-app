@@ -1,6 +1,6 @@
-import type { Param } from '@/types';
+import type { RequestParam } from '@/types/api.types';
 
-export const createQueryString = (query: Param[] | undefined) => {
+export const createQueryString = (query: RequestParam[] | undefined) => {
   if (!query) return '';
   const queryString = query
     .map((item) => {
