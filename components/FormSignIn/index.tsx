@@ -23,7 +23,7 @@ import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
 import { FirebaseError } from '@firebase/util';
-import { toastMessages } from '@/constants/toastMessages';
+import { authToastMessages } from '@/constants/toastMessages';
 import { toast } from 'sonner';
 
 function FormSignIn() {
@@ -43,17 +43,17 @@ function FormSignIn() {
       const user = await signInWithEmailAndPassword(auth, data.email, data.password);
       if (!user.user.emailVerified) {
         await logout();
-        toast.info(toastMessages.confirmEmail);
+        toast.info(authToastMessages.confirmEmail);
         router.push(routes.signin);
       } else {
-        toast.success(toastMessages.successSignIn);
+        toast.success(authToastMessages.successSignIn);
         router.push(routes.home);
       }
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/invalid-credential') {
-        toast.error(toastMessages.userNotFound);
+        toast.error(authToastMessages.userNotFound);
       } else {
-        toast.error(toastMessages.errorSignIn);
+        toast.error(authToastMessages.errorSignIn);
       }
     }
   };

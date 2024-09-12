@@ -5,7 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, logout } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { Button } from '@mui/material';
-import { toastMessages } from '@/constants/toastMessages';
+import { authToastMessages } from '@/constants/toastMessages';
 import { toast } from 'sonner';
 
 function Header() {
@@ -14,10 +14,10 @@ function Header() {
   const onLogout = async () => {
     try {
       await logout();
-      toast.info(toastMessages.signOutSuccess);
+      toast.info(authToastMessages.signOutSuccess);
       router.push(routes.home);
     } catch (error) {
-      toast.error(toastMessages.errorSignOut);
+      toast.error(authToastMessages.errorSignOut);
     }
   };
   return (
