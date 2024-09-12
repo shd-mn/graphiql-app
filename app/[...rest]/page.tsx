@@ -1,4 +1,4 @@
-import RestForm from '@/components/Form';
+import RestForm from '@/components/RestClient';
 import ResponseSection from '@/components/Response';
 import { ResizableGroup, ResizableHandle, ResizablePanel } from '@/components/Resizable';
 

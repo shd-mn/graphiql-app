@@ -7,7 +7,7 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 import { methods } from '@/constants/restClientData';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import CustomTabPanel from '../Table/CustomTabPanel';
+import CustomTabPanel from '../UI/CustomTabPanel';
 import { selectAll, setAllState } from '@/redux/features/restfullClient/restfullSlice';
 import type { Method, Param, RequestType } from '@/types';
 import { fetcher } from '@/services/response';
