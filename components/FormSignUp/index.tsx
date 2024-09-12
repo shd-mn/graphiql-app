@@ -66,6 +66,13 @@ function FormSignUp() {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="flex w-full max-w-sm flex-col gap-4 p-3">
+      <h1 className="text-3xl font-bold">Create Account</h1>
+      <div className="flex items-center gap-1">
+        <p className="m-0">Already have an account?</p>
+        <Link href={routes.signin} className="text-blue-500 hover:text-blue-700">
+          Sign in here
+        </Link>
+      </div>
       <TextField
         error={!!errors.name}
         id="name"
@@ -76,7 +83,7 @@ function FormSignUp() {
       <TextField
         error={!!errors.login}
         id="login"
-        label="Login"
+        label="Email"
         helperText={errors.login ? errors.login.message : ' '}
         {...register('login')}
       />
@@ -129,12 +136,6 @@ function FormSignUp() {
       <Button type="submit" variant="contained" disabled={!isValid && isSubmitted}>
         Sign up
       </Button>
-      <div className="flex flex-col items-center">
-        <p className="m-0">If you already have an account, please</p>
-        <Link href={routes.signin} className="text-blue-500 hover:text-blue-700">
-          Sign in
-        </Link>
-      </div>
     </form>
   );
 }

@@ -66,10 +66,17 @@ function FormSignIn() {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="flex w-full max-w-sm flex-col gap-4 p-3">
+      <h1 className="text-3xl font-bold">Welcome Back</h1>
+      <div className="flex items-center gap-1">
+        <p className="m-0">Don&apos;t have an account yet?</p>
+        <Link href={routes.signup} className="text-blue-500 hover:text-blue-700">
+          Sign up here
+        </Link>
+      </div>
       <TextField
         error={!!errors.login}
         id="login"
-        label="Login"
+        label="Email"
         helperText={errors.login ? errors.login.message : ' '}
         {...register('login')}
       />
@@ -99,12 +106,6 @@ function FormSignIn() {
       <Button type="submit" variant="contained" disabled={!isValid && isSubmitted}>
         Sign in
       </Button>
-      <div className="flex flex-col items-center">
-        <p className="m-0">If you don&apos;t have an account, please</p>
-        <Link href={routes.signup} className="text-blue-500 hover:text-blue-700">
-          Sign up
-        </Link>
-      </div>
     </form>
   );
 }
