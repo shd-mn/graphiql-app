@@ -1,22 +1,9 @@
-'use client';
 import { useMemo, useState } from 'react';
-import {
-  Box,
-  Button,
-  FormControlLabel,
-  Paper,
-  Switch,
-  Table,
-  TableContainer,
-  TablePagination,
-  Typography,
-} from '@mui/material';
+import { Box, Paper, Table, TableContainer, TablePagination, useMediaQuery, useTheme } from '@mui/material';
 import DataTableToolbar from './DataTableToolbar';
 import DataTableHead from './DataTableHead';
 import { getComparator } from '@/utils/getComparator';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
 import DataTableBody from './DataTableBody';
-import { routes } from '@/constants/routes';
 import { useRouter } from 'next/navigation';
 import { generateUrl } from '@/utils/generateUrl';
 import { setAllState } from '@/redux/features/restfulSlice';
@@ -25,8 +12,12 @@ import { resetResponse } from '@/redux/features/mainSlice';
 import type { DataTableType, Order } from '@/types/dataTable.types';
 import type { ApiRequest } from '@/types/api.types';
 
-export default function DataTable() {
-  const { storedValue: requests, setLocalStorageValue } = useLocalStorage<ApiRequest[]>('requests', []);
+type PropTypes = {
+  requests: ApiRequest[];
+  setStorageValue: (value: ApiRequest[]) => void;
+};
+
+export default function DataTable({ requests, setStorageValue }: PropTypes) {
   const dispatch = useAppDispatch();
   const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] = useState<keyof DataTableType>('date');
@@ -35,6 +26,8 @@ export default function DataTable() {
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof DataTableType) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -78,7 +71,7 @@ export default function DataTable() {
 
   const handleDelete = () => {
     const newRequests = requests.filter((request) => !selected.includes(request.id));
-    setLocalStorageValue(newRequests);
+    setStorageValue(newRequests);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -90,10 +83,6 @@ export default function DataTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - requests.length) : 0;
 
   const visibleRows = useMemo(
@@ -101,30 +90,11 @@ export default function DataTable() {
     [order, requests, orderBy, page, rowsPerPage],
   );
 
-  if (!requests.length) {
-    return (
-      <Box sx={{ width: '100%' }}>
-        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          You haven&apos;t executed any requests
-        </Typography>
-        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          It&apos;s empty here. Try:
-          <Button href={routes.restful} color="inherit" variant="outlined">
-            REST Client
-          </Button>
-          <Button href={routes.graphql} color="inherit" variant="outlined">
-            GraphiQL Client
-          </Button>
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <DataTableToolbar handleDelete={handleDelete} numSelected={selected.length} />
-        <TableContainer>
+    <Box className="padding-x h-full w-full pb-1 pt-3">
+      <Paper className="flex h-full w-full flex-col">
+        <DataTableToolbar numSelected={selected.length} dense={dense} setDense={setDense} handleDelete={handleDelete} />
+        <TableContainer sx={{ flexGrow: 1, overflow: 'auto' }}>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
             <DataTableHead
               numSelected={selected.length}
@@ -152,9 +122,17 @@ export default function DataTable() {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage={isMobile ? 'Rows:' : 'Rows per page:'}
+          labelDisplayedRows={({ from, to, count }) =>
+            isMobile ? `${from}-${to} of ${count}` : `${from}-${to} of ${count}`
+          }
+          slotProps={{
+            select: {
+              style: isMobile ? { marginRight: '8px' } : {},
+            },
+          }}
         />
       </Paper>
-      <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
     </Box>
   );
 }

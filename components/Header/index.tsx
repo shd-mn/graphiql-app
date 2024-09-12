@@ -21,7 +21,7 @@ function Header() {
     }
   };
   return (
-    <header className="padding-x flex h-14 items-center justify-between bg-blue-600 text-white">
+    <header className="padding-x z-50 flex h-14 items-center justify-between bg-blue-600 text-white">
       <div>
         <Link href={routes.home}>Home</Link>
       </div>
