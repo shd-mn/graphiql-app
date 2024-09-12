@@ -20,8 +20,8 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "types": ["vitest/globals", "vitest/jsdom", "@testing-library/jest-dom"]
+    "types": ["vitest/globals", "@testing-library/jest-dom", "./test.global.d.ts"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "vitest.config.mts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "vitest.config.mts", "test.global.d.ts"],
   "exclude": ["node_modules"]
 }
