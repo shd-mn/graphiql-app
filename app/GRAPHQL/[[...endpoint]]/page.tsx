@@ -22,7 +22,7 @@ function GraphQL({ params, searchParams }: Props) {
     <main className="gql flex h-[calc(100vh-6rem)] flex-col p-3">
       <ResizableGroup autoSaveId="graphql" direction="vertical">
         <ResizablePanel defaultSizePercentage={50} minSizePercentage={15} id="gql-panel">
-          <GraphiQLClient urlinput={url} queryinput={query} headersinput={searchParams} />
+          <GraphiQLClient urlinput={url} queryinput={query} headersinput={searchParams || {}} />
         </ResizablePanel>
         <ResizableHandle direction="vertical" />
         <ResizablePanel defaultSizePercentage={50} minSizePercentage={15}>
