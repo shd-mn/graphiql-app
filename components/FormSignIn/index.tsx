@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { SignInData } from '@/interfaces/auth.interface';
+import { SignInData } from '@/types/auth.types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { signInValidationSchema } from '@/validation/signin.validation';
 import {
@@ -40,7 +40,7 @@ function FormSignIn() {
 
   const onFormSubmit = async (data: SignInData) => {
     try {
-      const user = await signInWithEmailAndPassword(auth, data.login, data.password);
+      const user = await signInWithEmailAndPassword(auth, data.email, data.password);
       if (!user.user.emailVerified) {
         await logout();
         toast.info(toastMessages.confirmEmail);
@@ -74,11 +74,11 @@ function FormSignIn() {
         </Link>
       </div>
       <TextField
-        error={!!errors.login}
-        id="login"
+        error={!!errors.email}
+        id="email"
         label="Email"
-        helperText={errors.login ? errors.login.message : ' '}
-        {...register('login')}
+        helperText={errors.email ? errors.email.message : ' '}
+        {...register('email')}
       />
       <FormControl variant="outlined" error={!!errors.password}>
         <InputLabel htmlFor="password">Password</InputLabel>

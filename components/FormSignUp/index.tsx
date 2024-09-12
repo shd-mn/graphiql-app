@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { SignUpData } from '@/interfaces/auth.interface';
+import { SignUpData } from '@/types/auth.types';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import {
@@ -41,7 +41,7 @@ function FormSignUp() {
 
   const onFormSubmit = async (data: SignUpData) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, data.login, data.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       await logout();
       await updateProfile(userCredential.user, { displayName: data.name });
       toast.warning(toastMessages.confirmEmail);
@@ -81,11 +81,11 @@ function FormSignUp() {
         {...register('name')}
       />
       <TextField
-        error={!!errors.login}
-        id="login"
+        error={!!errors.email}
+        id="email"
         label="Email"
-        helperText={errors.login ? errors.login.message : ' '}
-        {...register('login')}
+        helperText={errors.email ? errors.email.message : ' '}
+        {...register('email')}
       />
       <FormControl variant="outlined" error={!!errors.password}>
         <InputLabel htmlFor="password">Password</InputLabel>
