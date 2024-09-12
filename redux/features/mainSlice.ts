@@ -3,6 +3,7 @@ import type { ResponseType } from '@/types';
 
 export interface MainSliceState {
   response: ResponseType;
+  isLoading: boolean;
 }
 
 const initialState: MainSliceState = {
@@ -14,25 +15,29 @@ const initialState: MainSliceState = {
     success: false,
     responseTime: 0,
   },
+  isLoading: false,
 };
 
 export const mainSlice = createSlice({
   name: 'main',
   initialState,
-  reducers: (create) => ({
-    setResponse: create.reducer((state, action: PayloadAction<ResponseType>) => {
+  reducers: {
+    setResponse: (state, action: PayloadAction<ResponseType>) => {
       state.response = action.payload;
-    }),
-    resetResponse: create.reducer((state) => {
+    },
+    resetResponse: (state) => {
       state.response = initialState.response;
-    }),
-  }),
+    },
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
+  },
 
   selectors: {
-    selectResponse: (main) => main.response,
+    selectResponse: (main: MainSliceState) => main.response,
+    selectAllMainState: (main: MainSliceState) => main,
   },
 });
 
-export const { setResponse, resetResponse } = mainSlice.actions;
-
-export const { selectResponse } = mainSlice.selectors;
+export const { setResponse, resetResponse, setIsLoading } = mainSlice.actions;
+export const { selectResponse, selectAllMainState } = mainSlice.selectors;
