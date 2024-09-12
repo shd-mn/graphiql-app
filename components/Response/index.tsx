@@ -5,10 +5,10 @@ import { Box } from '@mui/material';
 import { useAppSelector } from '@/redux/hooks';
 import { selectAllMainState } from '@/redux/features/mainSlice';
 import EmptyState from './EmptyState';
-import ResponseBody from './ResponseBody';
 import ResponseHeader from './ResponseHeader';
-import Ellipsis from '@/components/Ellipsis';
+import ResponseBody from './ResponseBody';
 import ErrorState from './ErrorState';
+import Ellipsis from '../UI/Ellipsis';
 
 function ResponseSection() {
   const [activeTab, setActiveTab] = useState(0);

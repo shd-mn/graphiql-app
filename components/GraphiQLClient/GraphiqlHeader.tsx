@@ -3,7 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { GQLHeader, selectAll, setHeaders } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { GQLHeader, selectAll, setHeaders } from '@/redux/features/graphiqlSlice';
 import { setBrowserUrl } from '@/utils/setBrowserUrl';
 import { useRouter } from 'next/navigation';
 

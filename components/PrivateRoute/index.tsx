@@ -5,7 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase';
 import { usePathname, useRouter } from 'next/navigation';
 import { routes } from '@/constants/routes';
-import Elipsis from '../Ellipsis';
+import Elipsis from '../UI/Ellipsis';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const [user, loading] = useAuthState(auth);

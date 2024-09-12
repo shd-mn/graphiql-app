@@ -1,4 +1,4 @@
-import ResponseSection from '@/components/RestClient/Response';
+import ResponseSection from '@/components/Response';
 import GraphiQLClient from '@/components/GraphiQLClient';
 import { ResizableGroup, ResizableHandle, ResizablePanel } from '@/components/Resizable';
 import { base64ToText } from '@/utils/coderBase64';

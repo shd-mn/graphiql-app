@@ -11,6 +11,6 @@ export const authToastMessages = {
 };
 
 export const toastMessages = {
-  errorSendQueryGraphiQL: 'Url not provided. Please provide endpoint url.',
+  urlNotProvided: 'Url not provided. Please provide endpoint url.',
   prettifyError: 'Failed to prettify query.',
 };

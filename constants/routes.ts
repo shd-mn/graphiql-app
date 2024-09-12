@@ -3,6 +3,6 @@ export const routes = {
   signin: '/signin',
   signup: '/signup',
   graphql: '/GRAPHQL',
-  restfull: '/rest',
+  restful: '/rest',
   history: '/history',
 };

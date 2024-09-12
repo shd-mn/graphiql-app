@@ -1,4 +1,4 @@
-import type { DataTableType, Order } from '@/types';
+import type { DataTableType, Order } from '@/types/dataTable.types';
 
 const descendingComparator = <T>(a: T, b: T, orderBy: keyof T): number => {
   if (b[orderBy] < a[orderBy]) {

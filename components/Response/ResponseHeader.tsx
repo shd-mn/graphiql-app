@@ -21,7 +21,7 @@ function ResponseHeader({ activeTab, handleTabChange }: PropTypes) {
       <Tabs
         value={activeTab}
         onChange={handleTabChange}
-        aria-label="restfull request tabs"
+        aria-label="restful request tabs"
         TabIndicatorProps={{
           className: 'bg-orange-500 mb-0 h-[2px] bottom-2',
         }}

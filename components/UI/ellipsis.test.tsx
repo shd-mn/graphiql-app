@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Ellipsis from '.';
+import Ellipsis from './Ellipsis';
 
 describe('Ellipsis Component', () => {
   it('renders the loading svg', () => {

@@ -1,15 +1,15 @@
 'use client';
 import { useEffect, useState } from 'react';
-import InputTable from '@/components/RestClient/Table/InputTable';
+import InputTable from '@/components/Table/InputTable';
 import { Box, Button, FormControl, MenuItem, OutlinedInput, Select, Tab, Tabs, Typography } from '@mui/material';
 import Editor from '@monaco-editor/react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { methods } from '@/constants/restClientData';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import CustomTabPanel from './CustomTabPanel';
-import { selectAll, setAllState } from '@/redux/features/restfullClient/restfullSlice';
-import type { Method, Param, RequestType } from '@/types';
+import CustomTabPanel from '../UI/CustomTabPanel';
+import { selectAll, setAllState } from '@/redux/features/restfulSlice';
+import type { HttpMethod, RequestParam, ApiRequest } from '@/types/api.types';
 import { fetcher } from '@/services/response';
 import { generateUrl } from '@/utils/generateUrl';
 import { nanoid } from '@reduxjs/toolkit';
@@ -17,19 +17,20 @@ import { setResponse, setIsLoading } from '@/redux/features/mainSlice';
 import { a11yProps } from '@/utils/a11yProps';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { toast } from 'sonner';
+import { toastMessages } from '@/constants/toastMessages';
 
 export type Inputs = {
-  method: Method;
+  method: HttpMethod;
   url: string;
-  params: Param[];
-  headers: Param[];
+  params: RequestParam[];
+  headers: RequestParam[];
   body: string;
-  variables: Param[];
+  variables: RequestParam[];
 };
 
 function RestForm() {
   const [activeTab, setActiveTab] = useState(0);
-  const { storedValue: request, setLocalStorageValue } = useLocalStorage<RequestType[]>('requests', []);
+  const { storedValue: request, setLocalStorageValue } = useLocalStorage<ApiRequest[]>('requests', []);
   const dispatch = useAppDispatch();
   const { method, url, params, headers, body, variables } = useAppSelector(selectAll);
   const router = useRouter();
@@ -57,7 +58,7 @@ function RestForm() {
     const id = nanoid();
     const date = `${new Date().toISOString()}`;
 
-    const newRequest: RequestType = { id, method, url, params, headers, body, variables, date };
+    const newRequest: ApiRequest = { id, method, url, params, headers, body, variables, date };
     setLocalStorageValue([...request, newRequest]);
     dispatch(setAllState(newRequest));
 
@@ -87,7 +88,7 @@ function RestForm() {
   };
 
   useEffect(() => {
-    if (errors.url?.type === 'required') toast.error('Url not provided. Please provide endpoint url.');
+    if (errors.url?.type === 'required') toast.error(toastMessages.urlNotProvided);
   }, [errors.url]);
 
   const selectedColor = methods.find((item) => item.name === watch('method'))?.color;
@@ -134,7 +135,7 @@ function RestForm() {
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
-            aria-label="restfull request tabs"
+            aria-label="restful request tabs"
             TabIndicatorProps={{
               className: 'bg-orange-500 mb-0 h-[2px] bottom-2',
             }}

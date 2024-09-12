@@ -1,9 +1,9 @@
+import { useMemo } from 'react';
 import { selectResponse } from '@/redux/features/mainSlice';
 import { useAppSelector } from '@/redux/hooks';
 import Editor from '@monaco-editor/react';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import CustomTabPanel from '../Form/CustomTabPanel';
-import { useMemo } from 'react';
+import CustomTabPanel from '../UI/CustomTabPanel';
 
 type PropTypes = {
   activeTab: number;

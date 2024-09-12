@@ -1,10 +1,10 @@
 import type { Action, ThunkAction } from '@reduxjs/toolkit';
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
-import { restfullSlice } from './features/restfullClient/restfullSlice';
+import { restfulSlice } from './features/restfulSlice';
+import { graphiqlSlice } from '@/redux/features/graphiqlSlice';
 import { mainSlice } from './features/mainSlice';
-import { graphiqlSlice } from '@/redux/features/graphiqlClient/graphiqlSlice';
 
-const rootReducer = combineSlices(mainSlice, restfullSlice, graphiqlSlice);
+const rootReducer = combineSlices(mainSlice, restfulSlice, graphiqlSlice);
 
 export type RootState = ReturnType<typeof rootReducer>;
 

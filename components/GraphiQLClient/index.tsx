@@ -3,9 +3,9 @@
 import React, { useMemo } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs } from '@mui/material';
 import { Box } from '@mui/system';
-import CustomTabPanel from '@/components/RestClient/Form/CustomTabPanel';
+import CustomTabPanel from '../UI/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlSlice';
 import { setResponse } from '@/redux/features/mainSlice';
 import { useRouter } from 'next/navigation';
 import { GraphiQLProvider, QueryEditor } from '@graphiql/react';
@@ -16,7 +16,7 @@ import PrettifyButton from '@/components/GraphiQLClient/PrettifyButton';
 import VariablesSection from '@/components/GraphiQLClient/VariablesSection';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useForm } from 'react-hook-form';
-import { UrlGraphql } from '@/interfaces/url-graphql.interfase';
+import { UrlGraphql } from '@/types/url-graphql.types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { urlValidationSchema } from '@/validation/url-graphql.validation';
 import UrlSection from '@/components/GraphiQLClient/UrlSection';
@@ -83,7 +83,7 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
     if (isValid) {
       void executeQuery();
     } else {
-      toast.error(toastMessages.errorSendQueryGraphiQL);
+      toast.error(toastMessages.urlNotProvided);
     }
   };
 

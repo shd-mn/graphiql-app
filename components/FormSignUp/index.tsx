@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { SignUpData } from '@/types/auth.types';
+import type { SignUpData } from '@/types/auth.types';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import {
