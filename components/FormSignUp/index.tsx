@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { SignUpData } from '@/interfaces/auth.interface';
+import { SignUpData } from '@/types/auth.types';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import {
@@ -25,7 +25,7 @@ import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
 import { FirebaseError } from '@firebase/util';
 import { toast } from 'sonner';
-import { toastMessages } from '@/constants/toastMessages';
+import { authToastMessages } from '@/constants/toastMessages';
 
 function FormSignUp() {
   const router = useRouter();
@@ -41,19 +41,19 @@ function FormSignUp() {
 
   const onFormSubmit = async (data: SignUpData) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, data.login, data.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       await logout();
       await updateProfile(userCredential.user, { displayName: data.name });
-      toast.warning(toastMessages.confirmEmail);
+      toast.warning(authToastMessages.confirmEmail);
       await sendEmailVerification(userCredential.user);
       router.push(routes.home);
-      setTimeout(() => toast.success(toastMessages.successSignUp), 4000);
+      setTimeout(() => toast.success(authToastMessages.successSignUp), 4000);
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/email-already-in-use') {
-        toast.warning(toastMessages.userAlreadyExist);
+        toast.warning(authToastMessages.userAlreadyExist);
         router.push(routes.signin);
       } else {
-        toast.error(toastMessages.errorSignUp);
+        toast.error(authToastMessages.errorSignUp);
       }
     }
   };
@@ -81,11 +81,11 @@ function FormSignUp() {
         {...register('name')}
       />
       <TextField
-        error={!!errors.login}
-        id="login"
+        error={!!errors.email}
+        id="email"
         label="Email"
-        helperText={errors.login ? errors.login.message : ' '}
-        {...register('login')}
+        helperText={errors.email ? errors.email.message : ' '}
+        {...register('email')}
       />
       <FormControl variant="outlined" error={!!errors.password}>
         <InputLabel htmlFor="password">Password</InputLabel>

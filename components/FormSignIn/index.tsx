@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { SignInData } from '@/interfaces/auth.interface';
+import { SignInData } from '@/types/auth.types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { signInValidationSchema } from '@/validation/signin.validation';
 import {
@@ -23,7 +23,7 @@ import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
 import { FirebaseError } from '@firebase/util';
-import { toastMessages } from '@/constants/toastMessages';
+import { authToastMessages } from '@/constants/toastMessages';
 import { toast } from 'sonner';
 
 function FormSignIn() {
@@ -40,20 +40,20 @@ function FormSignIn() {
 
   const onFormSubmit = async (data: SignInData) => {
     try {
-      const user = await signInWithEmailAndPassword(auth, data.login, data.password);
+      const user = await signInWithEmailAndPassword(auth, data.email, data.password);
       if (!user.user.emailVerified) {
         await logout();
-        toast.info(toastMessages.confirmEmail);
+        toast.info(authToastMessages.confirmEmail);
         router.push(routes.signin);
       } else {
-        toast.success(toastMessages.successSignIn);
+        toast.success(authToastMessages.successSignIn);
         router.push(routes.home);
       }
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/invalid-credential') {
-        toast.error(toastMessages.userNotFound);
+        toast.error(authToastMessages.userNotFound);
       } else {
-        toast.error(toastMessages.errorSignIn);
+        toast.error(authToastMessages.errorSignIn);
       }
     }
   };
@@ -74,11 +74,11 @@ function FormSignIn() {
         </Link>
       </div>
       <TextField
-        error={!!errors.login}
-        id="login"
+        error={!!errors.email}
+        id="email"
         label="Email"
-        helperText={errors.login ? errors.login.message : ' '}
-        {...register('login')}
+        helperText={errors.email ? errors.email.message : ' '}
+        {...register('email')}
       />
       <FormControl variant="outlined" error={!!errors.password}>
         <InputLabel htmlFor="password">Password</InputLabel>
