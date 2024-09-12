@@ -10,7 +10,7 @@ export default function RESTfull() {
           <RestForm />
         </ResizablePanel>
         <ResizableHandle direction="vertical" />
-        <ResizablePanel defaultSizePercentage={50} minSizePercentage={15}>
+        <ResizablePanel defaultSizePercentage={50} minSizePixels={32}>
           <ResponseSection />
         </ResizablePanel>
       </ResizableGroup>

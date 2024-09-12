@@ -7,9 +7,15 @@ import PrivateRoute from '@/components/PrivateRoute';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CssBaseline from '@mui/material/CssBaseline';
-import { StyledEngineProvider } from '@mui/material/styles';
+import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
+import theme from '@/theme';
 import './globals.css';
-const inter = Inter({ subsets: ['latin'] });
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: 'REST GraphQL Client',
@@ -23,15 +29,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
+      <body className={`${inter.variable}`}>
         <StoreProvider>
-          <CssBaseline />
           <AppRouterCacheProvider options={{ key: 'css' }}>
-            <StyledEngineProvider injectFirst>
-              <Header />
-              <PrivateRoute>{children}</PrivateRoute>
-              <Footer />
-            </StyledEngineProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <StyledEngineProvider injectFirst>
+                <Header />
+                <PrivateRoute>{children}</PrivateRoute>
+                <Footer />
+              </StyledEngineProvider>
+            </ThemeProvider>
             <Toaster expand={false} richColors closeButton duration={3000} className="bottom-24" />
           </AppRouterCacheProvider>
         </StoreProvider>
