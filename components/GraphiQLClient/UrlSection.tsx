@@ -10,9 +10,10 @@ import { UrlGraphql } from '@/interfaces/url-graphql.interfase';
 interface UrlFormInterface {
   errors: FormState<UrlGraphql>['errors'];
   register: UseFormRegister<UrlGraphql>;
+  urlinput?: string;
 }
 
-const UrlSection = ({ register, errors }: UrlFormInterface) => {
+const UrlSection = ({ register, errors, urlinput }: UrlFormInterface) => {
   const { url, sdlUrl } = useAppSelector(selectAll);
   const dispatch = useAppDispatch();
 
@@ -28,9 +29,9 @@ const UrlSection = ({ register, errors }: UrlFormInterface) => {
         id="endpoint"
         label="Endpoint"
         variant="outlined"
-        value={url}
         size="small"
         {...register('endpoint', {
+          value: url || urlinput,
           onChange: changeUrl,
         })}
       />

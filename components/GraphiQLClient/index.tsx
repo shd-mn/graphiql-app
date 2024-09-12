@@ -5,7 +5,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs } from
 import { Box } from '@mui/system';
 import CustomTabPanel from '@/components/RestClient/Form/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { GQLHeader, selectAll, setQuery } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlClient/graphiqlSlice';
 import { setResponse } from '@/redux/features/mainSlice';
 import { useRouter } from 'next/navigation';
 import { GraphiQLProvider, QueryEditor } from '@graphiql/react';
@@ -15,7 +15,6 @@ import Documentation from '@/components/GraphiQLClient/Documentation';
 import PrettifyButton from '@/components/GraphiQLClient/PrettifyButton';
 import VariablesSection from '@/components/GraphiQLClient/VariablesSection';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { routes } from '@/constants/routes';
 import { useForm } from 'react-hook-form';
 import { UrlGraphql } from '@/interfaces/url-graphql.interfase';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -26,14 +25,21 @@ import { toastMessages } from '@/constants/toastMessages';
 import { fetcher } from '@/services/response';
 import { a11yProps } from '@/utils/a11yProps';
 import { getFilteredQuery } from '@/utils/getiFlteredQuery';
-import { textToBase64 } from '@/utils/coderBase64';
+import { setBrowserUrl } from '@/utils/setBrowserUrl';
 
-const GraphiQLClient = () => {
+interface GraphiQLClientProps {
+  queryinput?: string;
+  headersinput: Record<string, string>;
+  urlinput?: string;
+}
+
+const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientProps) => {
   const { query, variables, url, headers } = useAppSelector(selectAll);
   const gqlFetcher = useMemo(() => createGraphiQLFetcher({ url }), [url]);
   const [value, setValue] = React.useState(0);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  setTimeout(() => dispatch(setUrl(urlinput || url)));
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -81,16 +87,9 @@ const GraphiQLClient = () => {
     }
   };
 
-  function setUrl() {
-    const encodedBody = textToBase64(JSON.stringify(getFilteredQuery(query)));
-    const encodedUrl = textToBase64(url);
-    const headersForUrl = stringFromHeaders(headers);
-    router.push(`${routes.graphql}/${encodedUrl}/${encodedBody}${headersForUrl}`);
-  }
-
-  function stringFromHeaders(headers: GQLHeader[]) {
-    return headers.length ? '?' + headers.map((header) => `${header.key}=${header.value}`).join('&') : '';
-  }
+  const updateUrl = () => {
+    router.push(setBrowserUrl(url, query, headers));
+  };
 
   function edit(value: string) {
     dispatch(setQuery(value));
@@ -105,12 +104,12 @@ const GraphiQLClient = () => {
   });
 
   return (
-    <GraphiQLProvider fetcher={gqlFetcher}>
+    <GraphiQLProvider fetcher={gqlFetcher} query={!query ? (queryinput ? queryinput.slice(1, -1) : '') : undefined}>
       <div>
         <div className="graphiql-container">
           <section className="px-3 pt-3">
             <form>
-              <UrlSection errors={errors} register={register} />
+              <UrlSection urlinput={urlinput} errors={errors} register={register} />
             </form>
             <Box>
               <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
@@ -126,7 +125,7 @@ const GraphiQLClient = () => {
                     Send
                   </Button>
                 </div>
-                <div className="flex" onBlur={setUrl}>
+                <div className="flex" onBlur={updateUrl}>
                   <QueryEditor onEdit={edit} />
                   <Documentation />
                 </div>
@@ -141,7 +140,7 @@ const GraphiQLClient = () => {
               </Accordion>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <GraphiqlHeader />
+              <GraphiqlHeader headersinput={headersinput} />
             </CustomTabPanel>
           </section>
         </div>

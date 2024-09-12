@@ -1,5 +1,7 @@
 import { usePrettifyEditors, useQueryEditor } from '@graphiql/react';
 import { Button } from '@mui/material';
+import { toast } from 'sonner';
+import { toastMessages } from '@/constants/toastMessages';
 
 function PrettifyButton() {
   const editor = useQueryEditor();
@@ -7,7 +9,11 @@ function PrettifyButton() {
 
   const handlePrettifyClick = () => {
     if (editor) {
-      prettifyEditors();
+      try {
+        prettifyEditors();
+      } catch {
+        toast.error(toastMessages.prettifyError);
+      }
     }
   };
 

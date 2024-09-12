@@ -3,13 +3,20 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { GQLHeader, selectHeaders, setHeaders } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { GQLHeader, selectAll, setHeaders } from '@/redux/features/graphiqlClient/graphiqlSlice';
+import { setBrowserUrl } from '@/utils/setBrowserUrl';
+import { useRouter } from 'next/navigation';
 
-const GraphiqlHeader = () => {
-  const headers = useAppSelector(selectHeaders);
+interface GraphiqlHeaderProps {
+  headersinput: Record<string, string>;
+}
+
+const GraphiqlHeader = ({ headersinput }: GraphiqlHeaderProps) => {
+  const { query, url, headers } = useAppSelector(selectAll);
+  const router = useRouter();
   const { register, handleSubmit, formState, reset, control } = useForm({
     defaultValues: {
-      headers,
+      headers: Object.entries(headersinput).map(([key, value]) => ({ key, value })) || headers,
     },
   });
 
@@ -21,6 +28,7 @@ const GraphiqlHeader = () => {
 
   const onFormSubmit = (headers: { headers: GQLHeader[] }) => {
     dispatch(setHeaders(headers.headers));
+    void router.push(setBrowserUrl(url, query, headers.headers));
     reset({ headers: headers.headers });
   };
 
