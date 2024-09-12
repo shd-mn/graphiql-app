@@ -1,7 +1,7 @@
-import { RequestType } from '@/types';
+import { ApiRequest } from '@/types/api.types';
 import { createQueryString } from './createQueryString';
 
-export function generateUrl(req: RequestType): string {
+export function generateUrl(req: ApiRequest): string {
   const base64url = btoa(req.url);
   const param = createQueryString(req.params);
   const base64param = param && btoa(`?${param}`);

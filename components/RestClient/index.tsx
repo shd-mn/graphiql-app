@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import CustomTabPanel from '../UI/CustomTabPanel';
 import { selectAll, setAllState } from '@/redux/features/restfulSlice';
-import type { Method, Param, RequestType } from '@/types';
+import type { HttpMethod, RequestParam, ApiRequest } from '@/types/api.types';
 import { fetcher } from '@/services/response';
 import { generateUrl } from '@/utils/generateUrl';
 import { nanoid } from '@reduxjs/toolkit';
@@ -19,17 +19,17 @@ import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { toast } from 'sonner';
 
 export type Inputs = {
-  method: Method;
+  method: HttpMethod;
   url: string;
-  params: Param[];
-  headers: Param[];
+  params: RequestParam[];
+  headers: RequestParam[];
   body: string;
-  variables: Param[];
+  variables: RequestParam[];
 };
 
 function RestForm() {
   const [activeTab, setActiveTab] = useState(0);
-  const { storedValue: request, setLocalStorageValue } = useLocalStorage<RequestType[]>('requests', []);
+  const { storedValue: request, setLocalStorageValue } = useLocalStorage<ApiRequest[]>('requests', []);
   const dispatch = useAppDispatch();
   const { method, url, params, headers, body, variables } = useAppSelector(selectAll);
   const router = useRouter();
@@ -57,7 +57,7 @@ function RestForm() {
     const id = nanoid();
     const date = `${new Date().toISOString()}`;
 
-    const newRequest: RequestType = { id, method, url, params, headers, body, variables, date };
+    const newRequest: ApiRequest = { id, method, url, params, headers, body, variables, date };
     setLocalStorageValue([...request, newRequest]);
     dispatch(setAllState(newRequest));
 

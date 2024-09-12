@@ -17,15 +17,16 @@ import { getComparator } from '@/utils/getComparator';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import DataTableBody from './DataTableBody';
 import { routes } from '@/constants/routes';
-import type { DataTableType, Order, RequestType } from '@/types';
 import { useRouter } from 'next/navigation';
 import { generateUrl } from '@/utils/generateUrl';
 import { setAllState } from '@/redux/features/restfulSlice';
 import { useAppDispatch } from '@/redux/hooks';
 import { resetResponse } from '@/redux/features/mainSlice';
+import type { DataTableType, Order } from '@/types/dataTable.types';
+import type { ApiRequest } from '@/types/api.types';
 
 export default function DataTable() {
-  const { storedValue: requests, setLocalStorageValue } = useLocalStorage<RequestType[]>('requests', []);
+  const { storedValue: requests, setLocalStorageValue } = useLocalStorage<ApiRequest[]>('requests', []);
   const dispatch = useAppDispatch();
   const [order, setOrder] = useState<Order>('desc');
   const [orderBy, setOrderBy] = useState<keyof DataTableType>('date');

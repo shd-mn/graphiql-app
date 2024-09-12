@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { ResponseType } from '@/types';
+import type { ApiResponse } from '@/types/api.types';
 
 export interface MainSliceState {
-  response: ResponseType;
+  response: ApiResponse;
   isLoading: boolean;
 }
 
@@ -22,7 +22,7 @@ export const mainSlice = createSlice({
   name: 'main',
   initialState,
   reducers: {
-    setResponse: (state, action: PayloadAction<ResponseType>) => {
+    setResponse: (state, action: PayloadAction<ApiResponse>) => {
       state.response = action.payload;
     },
     resetResponse: (state) => {

@@ -1,14 +1,14 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { Method, Param, RequestType } from '@/types';
+import type { HttpMethod, RequestParam, ApiRequest } from '@/types/api.types';
 
 export interface RestfulSliceState {
   id: string;
-  method: Method;
+  method: HttpMethod;
   url: string;
-  params: Param[];
-  headers: Param[];
+  params: RequestParam[];
+  headers: RequestParam[];
   body: string;
-  variables: Param[];
+  variables: RequestParam[];
   date: string;
 }
 
@@ -27,7 +27,7 @@ export const restfulSlice = createSlice({
   name: 'restful',
   initialState,
   reducers: (create) => ({
-    setAllState: create.reducer((state, action: PayloadAction<RequestType>) => {
+    setAllState: create.reducer((state, action: PayloadAction<ApiRequest>) => {
       state.id = action.payload.id;
       state.method = action.payload.method;
       state.url = action.payload.url;
@@ -37,16 +37,16 @@ export const restfulSlice = createSlice({
       state.variables = action.payload.variables;
       state.date = action.payload.date;
     }),
-    setMethod: create.reducer((state, action: PayloadAction<Method>) => {
+    setMethod: create.reducer((state, action: PayloadAction<HttpMethod>) => {
       state.method = action.payload;
     }),
     setURL: create.reducer((state, action: PayloadAction<string>) => {
       state.url = action.payload;
     }),
-    setQueryParam: create.reducer((state, action: PayloadAction<Param[]>) => {
+    setQueryParam: create.reducer((state, action: PayloadAction<RequestParam[]>) => {
       state.params = action.payload;
     }),
-    setHeaders: create.reducer((state, action: PayloadAction<Param[]>) => {
+    setHeaders: create.reducer((state, action: PayloadAction<RequestParam[]>) => {
       state.headers = action.payload;
     }),
   }),

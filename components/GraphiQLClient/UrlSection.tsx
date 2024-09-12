@@ -5,7 +5,7 @@ import { selectAll, setSdlUrl, setUrl } from '@/redux/features/graphiqlSlice';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { FormState, UseFormRegister } from 'react-hook-form';
-import { UrlGraphql } from '@/interfaces/url-graphql.interfase';
+import { UrlGraphql } from '@/types/url-graphql.types';
 
 interface UrlFormInterface {
   errors: FormState<UrlGraphql>['errors'];

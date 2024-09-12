@@ -1,6 +1,6 @@
-import { RequestType } from '@/types';
+import { ApiRequest } from '@/types/api.types';
 
-export function replaceValuesWithPlaceholders(obj: RequestType): RequestType {
+export function replaceValuesWithPlaceholders(obj: ApiRequest): ApiRequest {
   let jsonString = JSON.stringify(obj);
 
   obj.variables.forEach((variable) => {
@@ -8,5 +8,5 @@ export function replaceValuesWithPlaceholders(obj: RequestType): RequestType {
     jsonString = jsonString.replace(regex, `{{${variable.key}}}`);
   });
 
-  return JSON.parse(jsonString) as RequestType;
+  return JSON.parse(jsonString) as ApiRequest;
 }

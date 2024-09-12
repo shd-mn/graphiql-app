@@ -1,6 +1,6 @@
-import { Method } from '@/types';
+import { HttpMethod } from '@/types/api.types';
 
-export const methods: { name: Method; color: string }[] = [
+export const methods: { name: HttpMethod; color: string }[] = [
   { name: 'GET', color: 'text-green-500' },
   { name: 'POST', color: 'text-yellow-500' },
   { name: 'PUT', color: 'text-blue-500' },

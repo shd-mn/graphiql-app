@@ -1,12 +1,12 @@
-import { Param, RequestType } from '@/types';
+import { ApiRequest, RequestParam } from '@/types/api.types';
 
-export function replaceVariables(obj: RequestType): RequestType {
+export function replaceVariables(obj: ApiRequest): ApiRequest {
   let jsonString = JSON.stringify(obj);
 
-  obj.variables.forEach((variable: Param) => {
+  obj.variables.forEach((variable: RequestParam) => {
     const regex = new RegExp(`{{${variable.key}}}`, 'g');
     jsonString = jsonString.replace(regex, variable.value);
   });
 
-  return JSON.parse(jsonString) as RequestType;
+  return JSON.parse(jsonString) as ApiRequest;
 }

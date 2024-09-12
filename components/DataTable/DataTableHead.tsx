@@ -1,6 +1,6 @@
 import { Box, Checkbox, TableCell, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import type { DataTableType, HeadCell, Order } from '@/types';
+import type { DataTableType, HeadCell, Order } from '@/types/dataTable.types';
 
 interface DataTableProps {
   numSelected: number;

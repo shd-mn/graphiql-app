@@ -16,7 +16,7 @@ import PrettifyButton from '@/components/GraphiQLClient/PrettifyButton';
 import VariablesSection from '@/components/GraphiQLClient/VariablesSection';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useForm } from 'react-hook-form';
-import { UrlGraphql } from '@/interfaces/url-graphql.interfase';
+import { UrlGraphql } from '@/types/url-graphql.types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { urlValidationSchema } from '@/validation/url-graphql.validation';
 import UrlSection from '@/components/GraphiQLClient/UrlSection';
