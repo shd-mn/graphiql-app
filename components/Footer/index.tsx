@@ -3,7 +3,7 @@ import Link from 'next/link';
 import course_logo from '@/public/assets/rss-logo.svg';
 function Footer() {
   return (
-    <footer className="flex h-10 items-center justify-between bg-blue-600 text-sm text-white">
+    <footer className="padding-x flex h-10 items-center justify-between bg-blue-600 text-sm text-white">
       <ul className="flex gap-2">
         <li>
           <Link href="https://github.com/shd-mn" target="_blank">

@@ -15,12 +15,23 @@ export async function fetcher(url: string | URL | Request, options?: RequestInit
       body,
     });
 
-    const data = await res.json();
+    const contentType = res.headers.get('Content-Type') || '';
+
+    let data;
+    if (contentType.includes('application/json')) {
+      data = await res.json();
+    } else if (contentType.includes('text/plain')) {
+      data = await res.text();
+    } else if (contentType.includes('text/html')) {
+      data = await res.text();
+    } else {
+      data = await res.blob();
+    }
 
     const endTimer = Date.now();
 
     return {
-      data: JSON.stringify(data, null, 2),
+      data: typeof data === 'object' ? JSON.stringify(data, null, 2) : data,
       status: res.status,
       statusText: res.statusText,
       parsedHeaders: Object.fromEntries(res.headers),
@@ -30,8 +41,8 @@ export async function fetcher(url: string | URL | Request, options?: RequestInit
   } catch (error) {
     return {
       data: JSON.stringify(error),
-      status: 500,
-      statusText: getErrorMessage(error, 'Failed to fetch'),
+      status: 0,
+      statusText: getErrorMessage(error, 'Error: Failed to fetch'),
       parsedHeaders: {},
       success: false,
       responseTime: 0,

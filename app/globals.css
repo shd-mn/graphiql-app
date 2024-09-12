@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .padding-x {
+    @apply px-3 sm:px-4 md:px-8 lg:px-12;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+* {
+  scrollbar-width: thin;
+}
+
 .gql div[role='separator'] {
   z-index: 10000;
 }

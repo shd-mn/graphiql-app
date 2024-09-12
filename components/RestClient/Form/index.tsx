@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputTable from '@/components/RestClient/Table/InputTable';
 import { Box, Button, FormControl, MenuItem, OutlinedInput, Select, Tab, Tabs, Typography } from '@mui/material';
 import Editor from '@monaco-editor/react';
@@ -13,9 +13,10 @@ import type { Method, Param, RequestType } from '@/types';
 import { fetcher } from '@/services/response';
 import { generateUrl } from '@/utils/generateUrl';
 import { nanoid } from '@reduxjs/toolkit';
-import { setResponse } from '@/redux/features/mainSlice';
+import { setResponse, setIsLoading } from '@/redux/features/mainSlice';
 import { a11yProps } from '@/utils/a11yProps';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { toast } from 'sonner';
 
 export type Inputs = {
   method: Method;
@@ -48,9 +49,10 @@ function RestForm() {
     control,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = form;
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    dispatch(setIsLoading(true));
     const { url, method, params, headers, body, variables } = data;
     const id = nanoid();
     const date = `${new Date().toISOString()}`;
@@ -73,8 +75,8 @@ function RestForm() {
       headers: fetchHeaders,
       body: fetchBody,
     });
-
     dispatch(setResponse(res));
+    dispatch(setIsLoading(false));
 
     const generatedUrl = generateUrl(newRequest);
     router.push(`${generatedUrl}`);
@@ -84,9 +86,14 @@ function RestForm() {
     setActiveTab(newValue);
   };
 
+  useEffect(() => {
+    if (errors.url?.type === 'required') toast.error('Url not provided. Please provide endpoint url.');
+  }, [errors.url]);
+
   const selectedColor = methods.find((item) => item.name === watch('method'))?.color;
+
   return (
-    <section className="h-full flex-1 p-3">
+    <section className="padding-x h-full flex-1 pt-3">
       <FormProvider {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box component="div" className="mb-2 flex w-full items-start justify-between">
@@ -95,7 +102,6 @@ function RestForm() {
                 <Select
                   {...field}
                   className={`min-w-28 rounded-e-none font-medium ${selectedColor ? selectedColor : 'text-green-500'}`}
-                  defaultValue="GET"
                   autoWidth
                   size="small"
                 >
@@ -120,7 +126,7 @@ function RestForm() {
               />
             </FormControl>
 
-            <Button variant="contained" className="ml-2 h-10" type="submit">
+            <Button disabled={isSubmitting} variant="contained" className="ml-2 h-10" type="submit">
               SEND
             </Button>
           </Box>
@@ -136,6 +142,7 @@ function RestForm() {
             <Tab label="Params" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(0)} />
             <Tab label="Headers" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(1)} />
             <Tab label="Body" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(2)} />
+            <Tab label="Variables" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(3)} />
           </Tabs>
 
           <CustomTabPanel value={activeTab} index={0}>
@@ -153,13 +160,14 @@ function RestForm() {
               render={({ field }) => (
                 <Editor
                   {...field}
-                  height="300px"
                   defaultLanguage="json"
                   theme="vs-dark"
                   options={{
                     minimap: {
                       enabled: false,
                     },
+                    formatOnPaste: true,
+                    formatOnType: true,
                     lineNumbersMinChars: 4,
                     wordSeparators: '~!@#$%^&*()-=+[{]}|;:\'",.<>/?',
                     wordWrap: 'on',
@@ -174,6 +182,11 @@ function RestForm() {
               control={control}
             />
             Body
+          </CustomTabPanel>
+
+          <CustomTabPanel value={activeTab} index={3}>
+            <Typography className="text-sm">Variables</Typography>
+            <InputTable inputName="variables" />
           </CustomTabPanel>
         </form>
       </FormProvider>
