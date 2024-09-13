@@ -1,39 +1,40 @@
 'use client';
 import { auth } from '@/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { Link } from '@/i18n/routing';
 import { routes } from '@/constants/routes';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 const Welcome = () => {
   const [user] = useAuthState(auth);
-
+  const t = useTranslations('HomePage');
   return (
     <div>
       <div>
         {!user ? (
           <div>
-            <h2 className="text-center">Welcome!</h2>
+            <h2 className="text-center">{t('title')}</h2>
             <div className="flex gap-2">
               <Link href={routes.signin} className="text-blue-500 hover:text-blue-700">
-                Sign In
+                {t('signIn')}
               </Link>
               <Link href={routes.signup} className="text-blue-500 hover:text-blue-700">
-                Sign Up
+                {t('signUp')}
               </Link>
             </div>
           </div>
         ) : (
           <div>
-            <h2 className="text-center">Welcome Back, {user.displayName}!</h2>
+            <h2 className="text-center">{t('welcomeBack', { name: user.displayName })}</h2>
             <div className="flex gap-2">
               <Link href={routes.restful} className="text-blue-500 hover:text-blue-700">
-                REST Client
+                {t('restClient')}
               </Link>
               <Link href={routes.graphql} className="text-blue-500 hover:text-blue-700">
-                GraphiQL Client
+                {t('graphiqlClient')}
               </Link>
               <Link href={routes.history} className="text-blue-500 hover:text-blue-700">
-                History
+                {t('history')}
               </Link>
             </div>
           </div>

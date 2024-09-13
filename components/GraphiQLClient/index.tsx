@@ -7,7 +7,8 @@ import CustomTabPanel from '../UI/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlSlice';
 import { setResponse } from '@/redux/features/mainSlice';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { GraphiQLProvider, QueryEditor } from '@graphiql/react';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import GraphiqlHeader from '@/components/GraphiQLClient/GraphiqlHeader';
@@ -21,7 +22,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { urlValidationSchema } from '@/validation/url-graphql.validation';
 import UrlSection from '@/components/GraphiQLClient/UrlSection';
 import { toast } from 'sonner';
-import { toastMessages } from '@/constants/toastMessages';
 import { fetcher } from '@/services/response';
 import { a11yProps } from '@/utils/a11yProps';
 import { getFilteredQuery } from '@/utils/getiFlteredQuery';
@@ -40,6 +40,7 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
   const router = useRouter();
   const dispatch = useAppDispatch();
   setTimeout(() => dispatch(setUrl(urlinput || url)));
+  const tToast = useTranslations('ToastMessages');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -83,7 +84,7 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
     if (isValid) {
       void executeQuery();
     } else {
-      toast.error(toastMessages.urlNotProvided);
+      toast.error(tToast('general.urlNotProvided'));
     }
   };
 

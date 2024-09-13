@@ -1,16 +1,17 @@
 import { useMemo, useState } from 'react';
+import { useRouter } from '@/i18n/routing';
 import { Box, Paper, Table, TableContainer, TablePagination, useMediaQuery, useTheme } from '@mui/material';
 import DataTableToolbar from './DataTableToolbar';
 import DataTableHead from './DataTableHead';
 import { getComparator } from '@/utils/getComparator';
 import DataTableBody from './DataTableBody';
-import { useRouter } from 'next/navigation';
 import { generateUrl } from '@/utils/generateUrl';
 import { setAllState } from '@/redux/features/restfulSlice';
 import { useAppDispatch } from '@/redux/hooks';
 import { resetResponse } from '@/redux/features/mainSlice';
 import type { DataTableType, Order } from '@/types/dataTable.types';
 import type { ApiRequest } from '@/types/api.types';
+import { useTranslations } from 'next-intl';
 
 type PropTypes = {
   requests: ApiRequest[];
@@ -28,6 +29,7 @@ export default function DataTable({ requests, setStorageValue }: PropTypes) {
   const router = useRouter();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const t = useTranslations('HistoryPage');
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof DataTableType) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -93,7 +95,14 @@ export default function DataTable({ requests, setStorageValue }: PropTypes) {
   return (
     <Box className="padding-x h-full w-full pb-1 pt-3">
       <Paper className="flex h-full w-full flex-col">
-        <DataTableToolbar numSelected={selected.length} dense={dense} setDense={setDense} handleDelete={handleDelete} />
+        <DataTableToolbar
+          numSelected={selected.length}
+          dense={dense}
+          setDense={setDense}
+          handleDelete={handleDelete}
+          deleteLabel={t('delete')}
+          denseLabel={t('dense')}
+        />
         <TableContainer sx={{ flexGrow: 1, overflow: 'auto' }}>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
             <DataTableHead
@@ -103,6 +112,11 @@ export default function DataTable({ requests, setStorageValue }: PropTypes) {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               requestCount={requests.length}
+              labels={{
+                method: t('method'),
+                url: t('url'),
+                date: t('date'),
+              }}
             />
             <DataTableBody
               visibleRows={visibleRows}
@@ -122,9 +136,9 @@ export default function DataTable({ requests, setStorageValue }: PropTypes) {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage={isMobile ? 'Rows:' : 'Rows per page:'}
+          labelRowsPerPage={isMobile ? t('rows') : t('rowsPerPage')}
           labelDisplayedRows={({ from, to, count }) =>
-            isMobile ? `${from}-${to} of ${count}` : `${from}-${to} of ${count}`
+            isMobile ? `${from}-${to} ${t('of')} ${count}` : `${from}-${to} ${t('of')} ${count}`
           }
           slotProps={{
             select: {

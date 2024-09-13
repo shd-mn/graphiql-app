@@ -1,0 +1,97 @@
+{
+  "Language": {
+    "label": "Change language",
+    "locale": "EN"
+  },
+  "ToastMessages": {
+    "auth": {
+      "successSignIn": "You have successfully signed in.",
+      "errorSignIn": "Failed to sign in. Please try again.",
+      "userNotFound": "Please check your email and password or create an account.",
+      "confirmEmail": "Please confirm your email address",
+      "successSignUp": "You have successfully signed up.",
+      "errorSignUp": "Failed to sign up. Please try again.",
+      "userAlreadyExist": "User already exists. Please sign in.",
+      "signOutSuccess": "You have signed out.",
+      "errorSignOut": "Failed to sign out. Please try again."
+    },
+    "general": {
+      "urlNotProvided": "URL not provided. Please provide endpoint URL.",
+      "prettifyError": "Failed to prettify query."
+    }
+  },
+  "Header": {
+    "home": "Home",
+    "languageLabel": "English",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out"
+  },
+  "HomePage": {
+    "title": "Welcome!",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "welcomeBack": "Welcome Back, {name}!",
+    "restClient": "REST Client",
+    "graphiqlClient": "GraphiQL Client",
+    "history": "History"
+  },
+  "SignInPage": {
+    "title": "Welcome Back",
+    "noAccount": "Don't have an account yet?",
+    "signUpLink": "Sign up here",
+    "email": "Email",
+    "password": "Password",
+    "signInButton": "Sign in"
+  },
+  "SignUpPage": {
+    "title": "Create Account",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign in here",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "signUpButton": "Sign up"
+  },
+  "RestClient": {
+    "send": "SEND",
+    "params": "Params",
+    "headers": "Headers",
+    "body": "Body",
+    "variables": "Variables",
+    "queryParams": "Query Params"
+  },
+  "Response": {
+    "response": "Response",
+    "body": "Body",
+    "headers": "Headers",
+    "key": "Key",
+    "value": "Value",
+    "hitSendAlt": "hit send response",
+    "clickToSend": "Click To Send a response",
+    "couldNotSendRequest": "Could not send request"
+  },
+  "HistoryPage": {
+    "emptyRequestsAlt": "empty requests",
+    "noRequests": "You haven't executed any requests",
+    "tryFollowing": "It's empty here. Try:",
+    "restClient": "REST Client",
+    "graphiqlClient": "GraphiQL Client",
+    "delete": "Delete",
+    "dense": "Compact",
+    "method": "Method",
+    "url": "URL",
+    "status": "Status",
+    "date": "Date",
+    "rowsPerPage": "Rows per page:",
+    "of": "of",
+    "rows": "Rows:",
+    "selected": "selected",
+    "requestsHistory": "Requests History"
+  },
+  "NotFound": {
+    "title": "404 Page Not Found",
+    "backToHome": "Back to Home"
+  }
+}

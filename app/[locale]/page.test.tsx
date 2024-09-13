@@ -2,7 +2,7 @@ import { customRender } from '@/__test__/test-utils';
 import { screen } from '@testing-library/dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { User } from 'firebase/auth';
-import Home from '@/app/page';
+import Home from './page';
 
 vi.mock('@/firebase', () => ({
   auth: {},

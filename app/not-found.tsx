@@ -1,12 +1,13 @@
-import Link from 'next/link';
+'use client';
 
-function NotFound() {
+import Error from 'next/error';
+
+export default function NotFound() {
   return (
-    <div className="flex h-screen flex-col items-center justify-center text-white">
-      <h3>404 Page Not Found</h3>
-      <Link href="/">Back to Home </Link>
-    </div>
+    <html lang="en">
+      <body>
+        <Error statusCode={404} />
+      </body>
+    </html>
   );
 }
-
-export default NotFound;

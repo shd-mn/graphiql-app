@@ -9,31 +9,37 @@ interface DataTableProps {
   order: Order;
   orderBy: string;
   requestCount: number;
+  labels: {
+    method: string;
+    url: string;
+    date: string;
+  };
 }
 
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'method',
-    numeric: false,
-    disablePadding: true,
-    label: 'Method',
-  },
-  {
-    id: 'url',
-    numeric: false,
-    disablePadding: false,
-    label: 'URL',
-  },
-  {
-    id: 'date',
-    numeric: false,
-    disablePadding: false,
-    label: 'Date',
-  },
-];
-
 function DataTableHead(props: DataTableProps) {
-  const { onSelectAllClick, order, orderBy, numSelected, requestCount, onRequestSort } = props;
+  const { onSelectAllClick, order, orderBy, numSelected, requestCount, onRequestSort, labels } = props;
+
+  const headCells: readonly HeadCell[] = [
+    {
+      id: 'method',
+      numeric: false,
+      disablePadding: true,
+      label: labels.method,
+    },
+    {
+      id: 'url',
+      numeric: false,
+      disablePadding: false,
+      label: labels.url,
+    },
+    {
+      id: 'date',
+      numeric: false,
+      disablePadding: false,
+      label: labels.date,
+    },
+  ];
+
   const createSortHandler = (property: keyof DataTableType) => (event: React.MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
