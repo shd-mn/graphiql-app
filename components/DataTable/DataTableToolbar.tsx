@@ -1,14 +1,27 @@
 import React from 'react';
 import { alpha, FormControlLabel, IconButton, Switch, Toolbar, Tooltip, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useTranslations } from 'next-intl';
 
 interface DataTableToolbarProps {
   numSelected: number;
   dense: boolean;
   setDense: React.Dispatch<React.SetStateAction<boolean>>;
   handleDelete: () => void;
+  deleteLabel: string;
+  denseLabel: string;
 }
-function DataTableToolbar({ numSelected, dense, setDense, handleDelete }: DataTableToolbarProps) {
+
+function DataTableToolbar({
+  numSelected,
+  dense,
+  setDense,
+  handleDelete,
+  deleteLabel,
+  denseLabel,
+}: DataTableToolbarProps) {
+  const t = useTranslations('HistoryPage');
+
   const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
@@ -27,22 +40,22 @@ function DataTableToolbar({ numSelected, dense, setDense, handleDelete }: DataTa
     >
       {numSelected > 0 ? (
         <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
+          {numSelected} {t('selected')}
         </Typography>
       ) : (
         <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          Requests History
+          {t('requestsHistory')}
         </Typography>
       )}
       {numSelected > 0 ? (
-        <Tooltip title="Delete Items">
+        <Tooltip title={deleteLabel}>
           <IconButton onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Reduce List Dense">
-          <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense" />
+        <Tooltip title={denseLabel}>
+          <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label={denseLabel} />
         </Tooltip>
       )}
     </Toolbar>

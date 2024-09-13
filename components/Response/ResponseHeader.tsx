@@ -4,6 +4,7 @@ import { a11yProps } from '@/utils/a11yProps';
 import { getStatusColor } from '@/utils/getStatusColor';
 import { Box, Divider, Tab, Tabs, Typography } from '@mui/material';
 import prettyBytes from 'pretty-bytes';
+import { useTranslations } from 'next-intl';
 
 type PropTypes = {
   activeTab: number;
@@ -11,6 +12,7 @@ type PropTypes = {
 };
 
 function ResponseHeader({ activeTab, handleTabChange }: PropTypes) {
+  const t = useTranslations('Response');
   const { data, parsedHeaders, status, statusText, responseTime } = useAppSelector(selectResponse);
   const size = [JSON.stringify(data), JSON.stringify(parsedHeaders)].reduce((acc, cur) => acc + cur.length, 0);
 
@@ -26,8 +28,8 @@ function ResponseHeader({ activeTab, handleTabChange }: PropTypes) {
           className: 'bg-orange-500 mb-0 h-[2px] bottom-2',
         }}
       >
-        <Tab label="Body" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(0)} />
-        <Tab label="Headers" className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(1)} />
+        <Tab label={t('body')} className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(0)} />
+        <Tab label={t('headers')} className="me-4 min-w-max px-0 py-0 capitalize" {...a11yProps(1)} />
       </Tabs>
 
       <Box component="div" className="flex items-center justify-between gap-1 sm:gap-3">

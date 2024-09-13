@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
+import { Link, useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import type { SignUpData } from '@/types/auth.types';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,18 +19,18 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useRouter } from 'next/navigation';
 import { signUpValidationSchema } from '@/validation/signup.validation';
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from '@firebase/auth';
 import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
 import { FirebaseError } from '@firebase/util';
 import { toast } from 'sonner';
-import { authToastMessages } from '@/constants/toastMessages';
 
 function FormSignUp() {
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
+  const t = useTranslations('SignUpPage');
+  const tToast = useTranslations('ToastMessages');
 
   const {
     register,
@@ -44,16 +45,16 @@ function FormSignUp() {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       await logout();
       await updateProfile(userCredential.user, { displayName: data.name });
-      toast.warning(authToastMessages.confirmEmail);
+      toast.warning(tToast('auth.confirmEmail'));
       await sendEmailVerification(userCredential.user);
       router.push(routes.home);
-      setTimeout(() => toast.success(authToastMessages.successSignUp), 4000);
+      setTimeout(() => toast.success(tToast('auth.successSignUp')), 4000);
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/email-already-in-use') {
-        toast.warning(authToastMessages.userAlreadyExist);
+        toast.warning(tToast('auth.userAlreadyExist'));
         router.push(routes.signin);
       } else {
-        toast.error(authToastMessages.errorSignUp);
+        toast.error(tToast('auth.errorSignUp'));
       }
     }
   };
@@ -66,29 +67,29 @@ function FormSignUp() {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="flex w-full max-w-sm flex-col gap-4 p-3">
-      <h1 className="text-3xl font-bold">Create Account</h1>
+      <h1 className="text-3xl font-bold">{t('title')}</h1>
       <div className="flex items-center gap-1">
-        <p className="m-0">Already have an account?</p>
+        <p className="m-0">{t('haveAccount')}</p>
         <Link href={routes.signin} className="text-blue-500 hover:text-blue-700">
-          Sign in here
+          {t('signInLink')}
         </Link>
       </div>
       <TextField
         error={!!errors.name}
         id="name"
-        label="Name"
+        label={t('name')}
         helperText={errors.name ? errors.name.message : ' '}
         {...register('name')}
       />
       <TextField
         error={!!errors.email}
         id="email"
-        label="Email"
+        label={t('email')}
         helperText={errors.email ? errors.email.message : ' '}
         {...register('email')}
       />
       <FormControl variant="outlined" error={!!errors.password}>
-        <InputLabel htmlFor="password">Password</InputLabel>
+        <InputLabel htmlFor="password">{t('password')}</InputLabel>
         <OutlinedInput
           id="password"
           type={showPassword ? 'text' : 'password'}
@@ -104,14 +105,14 @@ function FormSignUp() {
               </IconButton>
             </InputAdornment>
           }
-          label="Password"
+          label={t('password')}
           autoComplete="current-password"
           {...register('password')}
         />
         <FormHelperText>{errors.password ? errors.password.message : ' '}</FormHelperText>
       </FormControl>
       <FormControl variant="outlined" error={!!errors.confirmPassword}>
-        <InputLabel htmlFor="confirm-password">Confirm password</InputLabel>
+        <InputLabel htmlFor="confirm-password">{t('confirmPassword')}</InputLabel>
         <OutlinedInput
           id="confirm-password"
           type={showPassword ? 'text' : 'password'}
@@ -127,14 +128,14 @@ function FormSignUp() {
               </IconButton>
             </InputAdornment>
           }
-          label="Confirm password"
+          label={t('confirmPassword')}
           autoComplete="current-password"
           {...register('confirmPassword')}
         />
         <FormHelperText>{errors.confirmPassword ? errors.confirmPassword.message : ' '}</FormHelperText>
       </FormControl>
       <Button type="submit" variant="contained" disabled={!isValid && isSubmitted}>
-        Sign up
+        {t('signUpButton')}
       </Button>
     </form>
   );

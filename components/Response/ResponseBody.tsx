@@ -4,12 +4,14 @@ import { useAppSelector } from '@/redux/hooks';
 import Editor from '@monaco-editor/react';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import CustomTabPanel from '../UI/CustomTabPanel';
+import { useTranslations } from 'next-intl';
 
 type PropTypes = {
   activeTab: number;
 };
 
 function ResponseBody({ activeTab }: PropTypes) {
+  const t = useTranslations('Response');
   const { data, parsedHeaders } = useAppSelector(selectResponse);
 
   const headers = Object.entries(parsedHeaders).map(([key, value]) => ({
@@ -62,8 +64,8 @@ function ResponseBody({ activeTab }: PropTypes) {
           <Table stickyHeader aria-label="response headers table">
             <TableHead>
               <TableRow>
-                <TableCell className="w-full">Key</TableCell>
-                <TableCell className="w-full">Value</TableCell>
+                <TableCell className="w-full">{t('key')}</TableCell>
+                <TableCell className="w-full">{t('value')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

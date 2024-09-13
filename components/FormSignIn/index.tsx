@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
+import { Link, useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import type { SignInData } from '@/types/auth.types';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,17 +19,17 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from '@firebase/auth';
 import { auth, logout } from '@/firebase';
 import { routes } from '@/constants/routes';
 import { FirebaseError } from '@firebase/util';
-import { authToastMessages } from '@/constants/toastMessages';
 import { toast } from 'sonner';
 
 function FormSignIn() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
+  const router = useRouter();
+  const t = useTranslations('SignInPage');
+  const tToast = useTranslations('ToastMessages');
 
   const {
     register,
@@ -43,17 +44,17 @@ function FormSignIn() {
       const user = await signInWithEmailAndPassword(auth, data.email, data.password);
       if (!user.user.emailVerified) {
         await logout();
-        toast.info(authToastMessages.confirmEmail);
+        toast.info(tToast('auth.confirmEmail'));
         router.push(routes.signin);
       } else {
-        toast.success(authToastMessages.successSignIn);
+        toast.success(tToast('auth.successSignIn'));
         router.push(routes.home);
       }
     } catch (error) {
       if (error instanceof FirebaseError && error.code === 'auth/invalid-credential') {
-        toast.error(authToastMessages.userNotFound);
+        toast.error(tToast('auth.userNotFound'));
       } else {
-        toast.error(authToastMessages.errorSignIn);
+        toast.error(tToast('auth.errorSignIn'));
       }
     }
   };
@@ -66,22 +67,22 @@ function FormSignIn() {
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="flex w-full max-w-sm flex-col gap-4 p-3">
-      <h1 className="text-3xl font-bold">Welcome Back</h1>
+      <h1 className="text-3xl font-bold">{t('title')}</h1>
       <div className="flex items-center gap-1">
-        <p className="m-0">Don&apos;t have an account yet?</p>
+        <p className="m-0">{t('noAccount')}</p>
         <Link href={routes.signup} className="text-blue-500 hover:text-blue-700">
-          Sign up here
+          {t('signUpLink')}
         </Link>
       </div>
       <TextField
         error={!!errors.email}
         id="email"
-        label="Email"
+        label={t('email')}
         helperText={errors.email ? errors.email.message : ' '}
         {...register('email')}
       />
       <FormControl variant="outlined" error={!!errors.password}>
-        <InputLabel htmlFor="password">Password</InputLabel>
+        <InputLabel htmlFor="password">{t('password')}</InputLabel>
         <OutlinedInput
           id="password"
           type={showPassword ? 'text' : 'password'}
@@ -97,14 +98,14 @@ function FormSignIn() {
               </IconButton>
             </InputAdornment>
           }
-          label="Password"
+          label={t('password')}
           autoComplete="current-password"
           {...register('password')}
         />
         <FormHelperText>{errors.password ? errors.password.message : ' '}</FormHelperText>
       </FormControl>
       <Button type="submit" variant="contained" disabled={!isValid && isSubmitted}>
-        Sign in
+        {t('signInButton')}
       </Button>
     </form>
   );
