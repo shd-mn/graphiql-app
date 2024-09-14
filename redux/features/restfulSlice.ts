@@ -16,10 +16,10 @@ const initialState: RestfulSliceState = {
   id: '',
   method: 'GET',
   url: '',
-  params: [{ isChecked: false, key: '', value: '' }],
-  headers: [{ isChecked: true, key: 'Content-Type', value: 'text/html; charset=utf-8' }],
+  params: [{ isChecked: true, key: '', value: '' }],
+  headers: [{ isChecked: true, key: '', value: '' }],
   body: '',
-  variables: [{ isChecked: false, key: '', value: '' }],
+  variables: [{ isChecked: true, key: '', value: '' }],
   date: '',
 };
 

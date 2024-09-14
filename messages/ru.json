@@ -22,7 +22,7 @@
   },
   "Header": {
     "home": "Главная",
-    "language": "RU",
+    "languageLabel": "Русский",
     "signIn": "Войти",
     "signUp": "Регистрация",
     "signOut": "Выйти"
@@ -56,11 +56,15 @@
   },
   "RestClient": {
     "send": "ОТПРАВИТЬ",
+    "add": "Добавить",
     "params": "Параметры",
     "headers": "Заголовки",
     "body": "Тело",
     "variables": "Переменные",
-    "queryParams": "Параметры запроса"
+    "queryParams": "Параметры запроса",
+    "prettify": "Форматировать",
+    "json": "JSON",
+    "text": "Текст"
   },
   "Response": {
     "response": "Ответ",
@@ -68,7 +72,7 @@
     "headers": "Заголовки",
     "key": "Ключ",
     "value": "Значение",
-    "hitSendAlt": "нажмите отправить ответ",
+    "hitSendAlt": "нажмите отправить",
     "clickToSend": "Нажмите, чтобы отправить запрос",
     "couldNotSendRequest": "Не удалось отправить запрос"
   },

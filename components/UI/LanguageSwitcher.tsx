@@ -1,4 +1,4 @@
-import { useLocale, useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { Locale, usePathname, useRouter } from '@/i18n/routing';
 import { routing } from '@/i18n/routing';
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
@@ -8,7 +8,6 @@ export default function LanguageSwitcher() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
-  const t = useTranslations('Language');
   const locale = useLocale();
 
   function handleLangChange(event: SelectChangeEvent) {
@@ -25,7 +24,6 @@ export default function LanguageSwitcher() {
       className="uppercase text-white"
       autoWidth
       size="small"
-      label={t('label')}
       defaultValue={locale}
       disabled={isPending}
       onChange={handleLangChange}
