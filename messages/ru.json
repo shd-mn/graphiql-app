@@ -31,6 +31,7 @@
     "title": "REST и GraphiQL",
     "signIn": "Войти",
     "signUp": "Регистрация",
+    "welcome": "Добро пожаловать!",
     "welcomeBack": "С возвращением, {name}!",
     "restClient": "REST Клиент",
     "graphiqlClient": "GraphiQL Клиент",

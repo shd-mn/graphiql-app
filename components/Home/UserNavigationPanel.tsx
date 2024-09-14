@@ -12,7 +12,7 @@ const UserNavigationPanel = () => {
     <Box>
       {!user ? (
         <Box className="flex flex-col items-center justify-center gap-3">
-          <h2 className="text-center text-xl font-medium">{t('title')}</h2>
+          <h2 className="text-center text-xl font-medium">{t('welcome')}</h2>
           <Box component="span" className="flex flex-wrap justify-center gap-2">
             <Button variant="contained">
               <Link href={routes.signin}>{t('signIn')}</Link>
