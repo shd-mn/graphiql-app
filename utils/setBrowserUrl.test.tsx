@@ -37,9 +37,6 @@ describe('setBrowserUrl', () => {
     const headersForUrl = '?Custom-Header=value with special characters !@#$%^&*()';
     const expectedUrl = `${routes.graphql}/${encodedUrl}/${encodedBody}${headersForUrl}`;
 
-    console.log('Expected URL:', expectedUrl);
-    console.log('Actual URL:', setBrowserUrl(url, query, headers));
-
     expect(setBrowserUrl(url, query, headers)).toBe(expectedUrl);
   });
 });
