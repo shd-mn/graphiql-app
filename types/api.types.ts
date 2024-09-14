@@ -1,13 +1,16 @@
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
 
-export interface ApiRequest {
-  id: string;
+export interface RequestFormTypes {
   method: HttpMethod;
   url: string;
   params: RequestParam[];
   headers: RequestParam[];
   body: string;
   variables: RequestParam[];
+}
+
+export interface ApiRequest extends RequestFormTypes {
+  id: string;
   date: string;
   sdl?: string;
 }

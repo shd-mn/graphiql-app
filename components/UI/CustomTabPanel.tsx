@@ -19,7 +19,7 @@ function CustomTabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box className="h-full w-full">{children}</Box>}
+      {value === index && <Box className="flex flex-grow flex-col overflow-hidden">{children}</Box>}
     </div>
   );
 }

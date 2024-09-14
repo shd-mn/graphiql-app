@@ -1,6 +1,6 @@
-import { ApiRequest, RequestParam } from '@/types/api.types';
+import { RequestFormTypes, RequestParam } from '@/types/api.types';
 
-export function replaceVariables(obj: ApiRequest): ApiRequest {
+export function replaceVariables(obj: RequestFormTypes): RequestFormTypes {
   let jsonString = JSON.stringify(obj);
 
   obj.variables.forEach((variable: RequestParam) => {
@@ -8,5 +8,5 @@ export function replaceVariables(obj: ApiRequest): ApiRequest {
     jsonString = jsonString.replace(regex, variable.value);
   });
 
-  return JSON.parse(jsonString) as ApiRequest;
+  return JSON.parse(jsonString) as RequestFormTypes;
 }
