@@ -15,7 +15,14 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.tsx'],
     coverage: {
       provider: 'v8',
-      exclude: ['**/.eslintrc.cjs', 'vitest.config.mts', 'next.config.mjs', 'next-env.d.ts', '**/custom-pattern/**', ...coverageConfigDefaults.exclude],
+      exclude: [
+        '**/.eslintrc.cjs',
+        'vitest.config.mts',
+        'next.config.mjs',
+        'next-env.d.ts',
+        '**/custom-pattern/**',
+        ...coverageConfigDefaults.exclude,
+      ],
     },
     css: false,
   },
