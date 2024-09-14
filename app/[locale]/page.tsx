@@ -1,9 +1,13 @@
-import Welcome from '@/components/Welcome';
+import FeaturesSection from '@/components/Home/FeaturesSection';
+import Hero from '@/components/Home/Hero';
+import TeamSection from '@/components/Home/TeamSection';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="flex h-[calc(100vh-6rem)] flex-col items-center justify-center p-3">
-      <Welcome />
+    <main>
+      <Hero />
+      <FeaturesSection />
+      <TeamSection />
     </main>
   );
 }

@@ -28,13 +28,16 @@
     "signOut": "Sign Out"
   },
   "HomePage": {
-    "title": "Welcome!",
+    "title": "REST & GraphiQL",
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "welcomeBack": "Welcome Back, {name}!",
     "restClient": "REST Client",
     "graphiqlClient": "GraphiQL Client",
-    "history": "History"
+    "history": "History",
+    "subtitle": "Light-weight versions of Postman and GraphiQL combined in one app",
+    "description": "The application combines lightweight versions of Postman and GraphiQL into a unified API testing platform, offering method selection, headers management, request editing, and response handling. Key features include Firebase-based user authentication, a history page to track and restore past queries, and multi-language support. Errors such as unhandled rejections and network timeouts are presented in a user-friendly format, while valid HTTP error codes (4xx/5xx) appear in the response section. This project is the final task of the ",
+    "rsSchoolLink": "RS School React course."
   },
   "SignInPage": {
     "title": "Welcome Back",
@@ -97,5 +100,15 @@
   "NotFound": {
     "title": "404 Page Not Found",
     "backToHome": "Back to Home"
+  },
+  "FeaturesSection": {
+    "feature1": "Efficient API testing with customizable methods, headers, and response analysis.",
+    "feature2": "Seamless query editing, documentation exploration, and response inspection.",
+    "feature3": "Track, restore, and manage previously executed API requests with ease."
+  },
+  "TeamSection": {
+    "title": "Our Team",
+    "teamLead": "Team Lead",
+    "developer": "Developer"
   }
 }
