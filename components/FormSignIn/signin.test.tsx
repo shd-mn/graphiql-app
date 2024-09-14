@@ -1,9 +1,11 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedFunction, vi } from 'vitest';
-import { IdTokenResult, signInWithEmailAndPassword } from '@firebase/auth';
 import FormSignIn from '@/components/FormSignIn';
 import { customRender } from '@/__test__/test-utils';
 import { ReactNode } from 'react';
+import { logout } from '@/firebase';
+import { toast } from 'sonner';
+import { signInWithEmailAndPassword } from '@firebase/auth';
 
 vi.mock('@/i18n/routing', () => ({
   Link: ({ children, href }: { children: ReactNode; href: string }) => <a href={href}>{children}</a>,
@@ -22,7 +24,16 @@ vi.mock('@/i18n/routing', () => ({
 }));
 
 vi.mock('@firebase/auth', () => ({
-  signInWithEmailAndPassword: vi.fn(),
+  signInWithEmailAndPassword: vi.fn().mockResolvedValue({
+    user: {
+      uid: 'user123',
+      email: 'john@example.com',
+      emailVerified: false,
+      displayName: null,
+    },
+    providerId: 'firebase',
+    operationType: 'signIn',
+  }),
 }));
 
 vi.mock('@/firebase', () => ({
@@ -34,46 +45,11 @@ vi.mock('sonner', () => ({
   toast: {
     success: vi.fn(),
     error: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
 describe('FormSignIn', () => {
-  beforeEach(() => {
-    (signInWithEmailAndPassword as MockedFunction<typeof signInWithEmailAndPassword>).mockResolvedValue({
-      user: {
-        emailVerified: true,
-        isAnonymous: false,
-        metadata: {},
-        providerData: [],
-        refreshToken: '',
-        tenantId: null,
-        delete: function (): Promise<void> {
-          throw new Error('Function not implemented.');
-        },
-        getIdToken: function (): Promise<string> {
-          throw new Error('Function not implemented.');
-        },
-        getIdTokenResult: function (): Promise<IdTokenResult> {
-          throw new Error('Function not implemented.');
-        },
-        reload: function (): Promise<void> {
-          throw new Error('Function not implemented.');
-        },
-        toJSON: function (): object {
-          throw new Error('Function not implemented.');
-        },
-        displayName: null,
-        email: null,
-        phoneNumber: null,
-        photoURL: null,
-        providerId: '',
-        uid: '',
-      },
-      providerId: 'firebase',
-      operationType: 'signIn',
-    });
-  });
-
   it('renders the form correctly', () => {
     customRender(<FormSignIn />);
 
@@ -122,5 +98,59 @@ describe('FormSignIn', () => {
     await waitFor(() => {
       expect(screen.getByText(/invalid email/i)).toBeInTheDocument();
     });
+  });
+
+  it('submits the form and calls Firebase functions on success', async () => {
+    const { user } = customRender(<FormSignIn />);
+
+    const emailInput = screen.getByLabelText(/email/i) as HTMLInputElement;
+    const passwordInput = screen.getByLabelText('Password', { selector: 'input' }) as HTMLInputElement;
+
+    fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'Password123!' } });
+
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(signInWithEmailAndPassword).toHaveBeenCalled();
+      expect(logout).toHaveBeenCalled();
+      expect(toast.info).toHaveBeenCalledWith('Please confirm your email address');
+    });
+  });
+
+  it('submits the form and calls Firebase functions on error', async () => {
+    const { user } = customRender(<FormSignIn />);
+    (signInWithEmailAndPassword as MockedFunction<typeof signInWithEmailAndPassword>).mockRejectedValue({
+      code: 'auth/email-already-in-use',
+    });
+
+    const emailInput = screen.getByLabelText(/email/i) as HTMLInputElement;
+    const passwordInput = screen.getByLabelText('Password', { selector: 'input' }) as HTMLInputElement;
+
+    fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'Password123!' } });
+
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(signInWithEmailAndPassword).toHaveBeenCalled();
+      expect(toast.error).toHaveBeenCalledWith('Failed to sign in. Please try' + ' again.');
+    });
+  });
+
+  it('prevents default behavior on password visibility toggle button mouse down', () => {
+    customRender(<FormSignIn />);
+
+    const togglePasswordVisibilityButton = screen.getAllByRole('button', { name: /toggle password visibility/i })[0];
+
+    const preventDefaultSpy = vi.spyOn(Event.prototype, 'preventDefault');
+
+    fireEvent.mouseDown(togglePasswordVisibilityButton);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+
+    preventDefaultSpy.mockRestore();
   });
 });
