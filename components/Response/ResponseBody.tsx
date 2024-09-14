@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { selectResponse } from '@/redux/features/mainSlice';
 import { useAppSelector } from '@/redux/hooks';
 import Editor from '@monaco-editor/react';
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import CustomTabPanel from '../UI/CustomTabPanel';
 import { useTranslations } from 'next-intl';
 
@@ -32,36 +32,38 @@ function ResponseBody({ activeTab }: PropTypes) {
   }, [parsedHeaders]);
 
   return (
-    <Box component="div" className="mb-1 flex h-full flex-col">
-      <CustomTabPanel value={activeTab} index={0} className="h-full flex-grow">
-        <Editor
-          theme="vs-dark"
-          defaultLanguage={editorLanguage}
-          value={data}
-          loading={null}
-          options={{
-            readOnly: true,
-            minimap: {
-              enabled: false,
-            },
-            smoothScrolling: true,
-            scrollbar: {
-              verticalScrollbarSize: 12,
-              horizontalScrollbarSize: 12,
-            },
-            lineNumbersMinChars: 4,
-            wordSeparators: '~!@#$%^&*()-=+[{]}|;:\'",.<>/?',
-            wordWrap: 'on',
-            wordWrapBreakAfterCharacters: '\t})]?|&,;',
-            wordWrapBreakBeforeCharacters: '{([+',
-            wordWrapColumn: 80,
-            wrappingIndent: 'indent',
-          }}
-        />
+    <Box component="div" className="mb-1 flex h-full flex-grow flex-col overflow-hidden">
+      <CustomTabPanel value={activeTab} index={0} className="flex flex-grow flex-col overflow-hidden">
+        <Box className="flex flex-grow">
+          <Editor
+            theme="vs-dark"
+            defaultLanguage={editorLanguage}
+            value={data}
+            loading={null}
+            options={{
+              readOnly: true,
+              minimap: {
+                enabled: false,
+              },
+              smoothScrolling: true,
+              scrollbar: {
+                verticalScrollbarSize: 12,
+                horizontalScrollbarSize: 12,
+              },
+              lineNumbersMinChars: 4,
+              wordSeparators: '~!@#$%^&*()-=+[{]}|;:\'",.<>/?',
+              wordWrap: 'on',
+              wordWrapBreakAfterCharacters: '\t})]?|&,;',
+              wordWrapBreakBeforeCharacters: '{([+',
+              wordWrapColumn: 80,
+              wrappingIndent: 'indent',
+            }}
+          />
+        </Box>
       </CustomTabPanel>
-      <CustomTabPanel value={activeTab} index={1} className="h-full flex-grow overflow-auto">
-        <TableContainer component={Paper} className="h-full">
-          <Table stickyHeader aria-label="response headers table">
+      <CustomTabPanel value={activeTab} index={1} className="flex flex-grow-0 flex-col overflow-hidden">
+        <TableContainer className="h-full overflow-auto">
+          <Table stickyHeader sx={{ minWidth: 450 }} className="pb-2" size="small" aria-label="response headers table">
             <TableHead>
               <TableRow>
                 <TableCell className="w-full">{t('key')}</TableCell>
