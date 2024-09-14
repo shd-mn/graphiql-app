@@ -46,11 +46,7 @@ export const graphiqlSlice = createSlice({
 
   selectors: {
     selectAll: (graphiql) => graphiql,
-    selectQuery: (graphiql) => graphiql.query,
     selectHeaders: (graphiql) => graphiql.headers,
-    selectVariables: (graphiql) => graphiql.variables,
-    selectUrl: (graphiql) => graphiql.url,
-    selectSdlUrl: (graphiql) => graphiql.sdlUrl,
   },
 });
 
