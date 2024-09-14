@@ -54,7 +54,6 @@ export const restfulSlice = createSlice({
   selectors: {
     selectAll: (restful) => restful,
     selectMethod: (restful) => restful.method,
-    selectUrl: (restful) => restful.url,
   },
 });
 
