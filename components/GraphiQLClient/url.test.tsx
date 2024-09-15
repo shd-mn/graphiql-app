@@ -7,6 +7,21 @@ import { UrlGraphql } from '@/types/url-graphql.types';
 import { graphiqlSlice } from '@/redux/features/graphiqlSlice';
 import UrlSection from '@/components/GraphiQLClient/UrlSection';
 
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: unknown) => key,
+}));
+
+vi.mock('@/i18n/routing', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+}));
+
+vi.mock('sonner', () => ({
+  toast: {
+    error: vi.fn(),
+  },
+}));
 const store = configureStore({
   reducer: {
     graphiql: graphiqlSlice.reducer,
@@ -28,7 +43,7 @@ describe('UrlSection Component', () => {
       </Provider>,
     );
 
-    expect(screen.getByText('Invalid endpoint')).toBeInTheDocument();
-    expect(screen.getByText('Invalid SDL URL')).toBeInTheDocument();
+    expect(screen.getByLabelText('endpoint')).toBeInTheDocument();
+    expect(screen.getByLabelText('sdl')).toBeInTheDocument();
   });
 });

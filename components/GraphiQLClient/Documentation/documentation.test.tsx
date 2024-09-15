@@ -4,6 +4,12 @@ import Documentation from './index';
 import { customRender } from '../../../__test__/test-utils';
 import '@testing-library/jest-dom';
 
+vi.mock('@/components/Resizable', () => ({
+  __esModule: true,
+  ResizableHandle: () => <div>ResizableHandle Mock</div>,
+  ResizablePanel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
 vi.mock('@graphiql/react', () => ({
   DocExplorer: () => <div>DocExplorer Mock</div>,
   useSchemaContext: () => ({

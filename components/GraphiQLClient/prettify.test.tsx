@@ -34,7 +34,7 @@ describe('PrettifyButton Component', () => {
 
     customRender(<PrettifyButton />);
 
-    fireEvent.click(screen.getByText('Prettify query'));
+    fireEvent.click(screen.getByText('prettify'));
 
     expect(mockPrettifyEditors).toHaveBeenCalled();
   });
@@ -49,7 +49,7 @@ describe('PrettifyButton Component', () => {
 
     customRender(<PrettifyButton />);
 
-    fireEvent.click(screen.getByText('Prettify query'));
+    fireEvent.click(screen.getByText('prettify'));
 
     expect(vi.mocked(toast.error)).toHaveBeenCalledWith('general.prettifyError');
   });
