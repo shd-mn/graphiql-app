@@ -36,7 +36,6 @@ function ResponseBody({ activeTab }: PropTypes) {
       <CustomTabPanel value={activeTab} index={0} className="flex flex-grow flex-col overflow-hidden">
         <Box className="flex flex-grow">
           <Editor
-            theme="vs-dark"
             defaultLanguage={editorLanguage}
             value={data}
             loading={null}
