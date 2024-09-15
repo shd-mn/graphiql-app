@@ -287,7 +287,7 @@ function RestForm() {
                     startIcon={showVariables ? <VisibilityOff /> : <Visibility />}
                     onClick={handleShowHideVariables}
                   >
-                    {showVariables ? 'hide' : 'show'}
+                    {showVariables ? t('hide') : t('show')}
                   </Button>
                   <Button
                     variant="contained"
@@ -339,7 +339,6 @@ function RestForm() {
                   render={({ field }) => (
                     <Editor
                       language={bodyFormat === 'json' ? 'json' : 'plaintext'}
-                      theme="vs-dark"
                       value={bodyValue}
                       onChange={(value) => field.onChange(value)}
                       onMount={(editor) => {

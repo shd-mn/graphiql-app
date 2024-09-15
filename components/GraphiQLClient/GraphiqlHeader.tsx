@@ -6,6 +6,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { GQLHeader, selectAll, setHeaders } from '@/redux/features/graphiqlSlice';
 import { setBrowserUrl } from '@/utils/setBrowserUrl';
+import { useTranslations } from 'next-intl';
 
 interface GraphiqlHeaderProps {
   headersinput: Record<string, string>;
@@ -25,6 +26,7 @@ const GraphiqlHeader = ({ headersinput }: GraphiqlHeaderProps) => {
     name: 'headers',
   });
   const dispatch = useAppDispatch();
+  const t = useTranslations('GraphQLClient');
 
   const onFormSubmit = (headers: { headers: GQLHeader[] }) => {
     dispatch(setHeaders(headers.headers));
@@ -41,12 +43,17 @@ const GraphiqlHeader = ({ headersinput }: GraphiqlHeaderProps) => {
   };
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-grow flex-col overflow-auto p-4">
       <form className="flex flex-col gap-2">
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2">
-            <TextField label="Header Key" variant="outlined" size="small" {...register(`headers.${index}.key`)} />
-            <TextField label="Header Value" variant="outlined" size="small" {...register(`headers.${index}.value`)} />
+            <TextField label={t('headerKey')} variant="outlined" size="small" {...register(`headers.${index}.key`)} />
+            <TextField
+              label={t('headerValue')}
+              variant="outlined"
+              size="small"
+              {...register(`headers.${index}.value`)}
+            />
             {fields.length > 1 ? (
               <IconButton aria-label="delete" onClick={() => removeField(index)}>
                 <DeleteIcon />
@@ -63,7 +70,7 @@ const GraphiqlHeader = ({ headersinput }: GraphiqlHeaderProps) => {
             disabled={Object.keys(formState.dirtyFields).length === 0}
             onClick={handleSubmit(onFormSubmit)}
           >
-            Set Headers
+            {t('setHeaders')}
           </Button>
         </div>
       </form>

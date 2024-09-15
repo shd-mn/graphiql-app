@@ -8,25 +8,19 @@
   }
 }
 
-::-webkit-scrollbar {
-  width: 15px;
-}
-
 * {
   scrollbar-width: thin;
 }
 
-.gql div[role='separator'] {
-  z-index: 10000;
+::-webkit-scrollbar {
+  width: 15px;
 }
 
-.gql div[data-panel-id='gql-panel'] {
-  overflow: auto !important;
+.custom-button {
+  padding: 6px 10px;
+  border-radius: 4px;
 }
 
-.gql .graphiql-editor .CodeMirror {
-  position: unset;
-  height: auto;
-  /*overflow: unset;*/
-  /*display: contents;*/
+.custom-button:hover {
+  background-color: rgba(0, 81, 255, 0.63);
 }
