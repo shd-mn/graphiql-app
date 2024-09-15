@@ -79,6 +79,7 @@ function FormSignIn() {
         id="email"
         label={t('email')}
         helperText={errors.email ? errors.email.message : ' '}
+        autoComplete="email"
         {...register('email')}
       />
       <FormControl variant="outlined" error={!!errors.password}>
