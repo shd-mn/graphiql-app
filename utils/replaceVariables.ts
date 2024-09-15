@@ -1,12 +1,13 @@
 import { RequestFormTypes, RequestParam } from '@/types/api.types';
 
 export function replaceVariables(obj: RequestFormTypes): RequestFormTypes {
-  let jsonString = JSON.stringify(obj);
+  const { variables, ...rest } = obj;
+  let jsonString = JSON.stringify(rest);
 
-  obj.variables.forEach((variable: RequestParam) => {
+  variables.forEach((variable: RequestParam) => {
     const regex = new RegExp(`{{${variable.key}}}`, 'g');
     jsonString = jsonString.replace(regex, variable.value);
   });
 
-  return JSON.parse(jsonString) as RequestFormTypes;
+  return { ...JSON.parse(jsonString), variables } as RequestFormTypes;
 }
