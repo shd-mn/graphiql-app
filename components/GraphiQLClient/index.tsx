@@ -35,11 +35,16 @@ interface GraphiQLClientProps {
 }
 
 const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientProps) => {
-  const { query, variables, url, headers, appLoaded } = useAppSelector(selectAll);
+  const { query, variables, url, headers, appLoaded, sdlUrl } = useAppSelector(selectAll);
   const gqlFetcher = useMemo(() => createGraphiQLFetcher({ url }), [url]);
   const [value, setValue] = React.useState(0);
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const docFetcher = useMemo(
+    () => createGraphiQLFetcher({ url: sdlUrl.includes('?sdl') ? sdlUrl.split('?sdl')[0] : sdlUrl }),
+    [sdlUrl],
+  );
 
   const t = useTranslations('GraphQLClient');
   const tToast = useTranslations('ToastMessages');
@@ -175,8 +180,14 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
                   <GraphiqlHeader headersinput={headersinput} />
                 </CustomTabPanel>
               </ResizablePanel>
-
-              <Documentation />
+              x
+              {sdlUrl ? (
+                <GraphiQLProvider fetcher={docFetcher}>
+                  <Documentation />
+                </GraphiQLProvider>
+              ) : (
+                <Documentation />
+              )}
             </ResizableGroup>
           </Paper>
         </section>
