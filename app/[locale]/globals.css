@@ -27,6 +27,13 @@
 .gql .graphiql-editor .CodeMirror {
   position: unset;
   height: auto;
-  /*overflow: unset;*/
-  /*display: contents;*/
+}
+
+.custom-button {
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.custom-button:hover {
+  background-color: chocolate;
 }
