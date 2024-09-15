@@ -287,7 +287,7 @@ function RestForm() {
                     startIcon={showVariables ? <VisibilityOff /> : <Visibility />}
                     onClick={handleShowHideVariables}
                   >
-                    {showVariables ? 'hide' : 'show'}
+                    {showVariables ? t('hide') : t('show')}
                   </Button>
                   <Button
                     variant="contained"

@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Tab, Tabs } from '@mui/material';
-import { Box } from '@mui/system';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Paper, Tab, Tabs } from '@mui/material';
 import CustomTabPanel from '../UI/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlSlice';
-import { setResponse } from '@/redux/features/mainSlice';
+import { setIsLoading, setResponse } from '@/redux/features/mainSlice';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { GraphiQLProvider, QueryEditor } from '@graphiql/react';
@@ -26,6 +25,8 @@ import { fetcher } from '@/services/response';
 import { a11yProps } from '@/utils/a11yProps';
 import { getFilteredQuery } from '@/utils/getiFlteredQuery';
 import { setBrowserUrl } from '@/utils/setBrowserUrl';
+import { ResizableGroup, ResizablePanel } from '../Resizable';
+import '@graphiql/react/dist/style.css';
 
 interface GraphiQLClientProps {
   queryinput?: string;
@@ -40,6 +41,7 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
   const router = useRouter();
   const dispatch = useAppDispatch();
   setTimeout(() => dispatch(setUrl(urlinput || url)));
+  const t = useTranslations('GraphQLClient');
   const tToast = useTranslations('ToastMessages');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -47,6 +49,7 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
   };
 
   const executeQuery = async () => {
+    dispatch(setIsLoading(true));
     const filteredQuery = getFilteredQuery(query);
     const requestHeaders = Object.fromEntries(headers.map((header) => [header.key, header.value]).reverse());
 
@@ -73,10 +76,13 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
           variables: variables ? JSON.parse(variables) : {},
         }),
       });
+
       dispatch(setResponse(res));
       return res;
     } catch (error) {
       toast.error(error as string);
+    } finally {
+      dispatch(setIsLoading(false));
     }
   };
 
@@ -106,45 +112,64 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
 
   return (
     <GraphiQLProvider fetcher={gqlFetcher} query={!query ? (queryinput ? queryinput.slice(1, -1) : '') : undefined}>
-      <div>
-        <div className="graphiql-container">
-          <section className="px-3 pt-3">
-            <form>
-              <UrlSection urlinput={urlinput} errors={errors} register={register} />
-            </form>
-            <Box>
-              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                <Tab label="Query" {...a11yProps(0)} className="h-12" />
-                <Tab label="Headers" {...a11yProps(1)} />
-              </Tabs>
-            </Box>
-            <CustomTabPanel value={value} index={0}>
-              <div>
-                <div className="sticky top-0 z-10 flex justify-center gap-2">
-                  <PrettifyButton />
-                  <Button onClick={handleSubmit(sendQuery)} type="submit" variant="contained">
-                    Send
-                  </Button>
-                </div>
-                <div className="flex" onBlur={updateUrl}>
-                  <QueryEditor onEdit={edit} />
-                  <Documentation />
-                </div>
-              </div>
-              <Accordion className="sticky bottom-0 bg-gray-100 text-orange-600">
-                <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="panel1-header">
-                  VARIABLES
-                </AccordionSummary>
-                <AccordionDetails>
-                  <VariablesSection />
-                </AccordionDetails>
-              </Accordion>
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
-              <GraphiqlHeader headersinput={headersinput} />
-            </CustomTabPanel>
-          </section>
-        </div>
+      <div className="graphiql-container flex h-full max-h-[70vh] flex-col">
+        <section className="padding-x flex h-full flex-grow flex-col overflow-hidden pt-3">
+          <form>
+            <UrlSection urlinput={urlinput} errors={errors} register={register} />
+          </form>
+          <Paper className="mb-2 flex flex-grow flex-col overflow-hidden" elevation={2}>
+            <ResizableGroup autoSaveId="graphql" direction="horizontal">
+              <ResizablePanel id="query" order={1} className="flex flex-col" minSizePercentage={20}>
+                <Box className="flex items-center justify-between">
+                  <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    scrollButtons
+                    allowScrollButtonsMobile
+                    aria-label="graphiql tabs"
+                    TabIndicatorProps={{
+                      className: 'bg-orange-500 flex px-4 mb-0 h-[2px] bottom-2',
+                    }}
+                  >
+                    <Tab label={t('query')} {...a11yProps(0)} className="mx-4 min-w-max px-0 py-0 capitalize" />
+                    <Tab label={t('headers')} {...a11yProps(1)} className="me-4 min-w-max px-0 py-0 capitalize" />
+                  </Tabs>
+                  <Box>
+                    {value === 0 && <PrettifyButton />}
+                    <Button onClick={handleSubmit(sendQuery)} type="submit" variant="contained" className="me-4 h-8">
+                      {t('send')}
+                    </Button>
+                  </Box>
+                </Box>
+
+                <CustomTabPanel value={value} index={0} className="flex flex-grow flex-col overflow-hidden">
+                  <div className="flex h-full w-full flex-col" onBlur={updateUrl}>
+                    <QueryEditor onEdit={edit} />
+                  </div>
+                  <Accordion className="m-0 flex flex-col bg-gray-100">
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1-content"
+                      id="panel1-header"
+                      className="m-0 h-8 min-h-0 px-2 py-1"
+                    >
+                      {t('variables')}
+                    </AccordionSummary>
+                    <AccordionDetails className="flex h-full flex-grow p-0">
+                      <VariablesSection />
+                    </AccordionDetails>
+                  </Accordion>
+                </CustomTabPanel>
+
+                <CustomTabPanel value={value} index={1} className="flex flex-grow-0 flex-col overflow-hidden">
+                  <GraphiqlHeader headersinput={headersinput} />
+                </CustomTabPanel>
+              </ResizablePanel>
+
+              <Documentation />
+            </ResizableGroup>
+          </Paper>
+        </section>
       </div>
     </GraphiQLProvider>
   );
