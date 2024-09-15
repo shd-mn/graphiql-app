@@ -94,7 +94,7 @@ export default function DataTable({ requests, setStorageValue }: PropTypes) {
 
   return (
     <Box className="padding-x h-full w-full pb-1 pt-3">
-      <Paper className="flex h-full w-full flex-col">
+      <Paper className="flex h-full w-full flex-col" elevation={3}>
         <DataTableToolbar
           numSelected={selected.length}
           dense={dense}
