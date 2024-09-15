@@ -19,8 +19,8 @@ function ErrorState() {
           <Image
             src={failedFetch}
             alt={t('couldNotSendRequest')}
-            width={140}
-            height={140}
+            width={120}
+            height={120}
             className="mb-3 h-auto w-auto object-contain"
             priority
           />
