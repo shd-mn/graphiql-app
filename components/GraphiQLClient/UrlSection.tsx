@@ -8,23 +8,26 @@ import { FormState, UseFormRegister } from 'react-hook-form';
 import { UrlGraphql } from '@/types/url-graphql.types';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
+import { setBrowserUrl } from '@/utils/setBrowserUrl';
+import { useRouter } from '@/i18n/routing';
 
 interface UrlFormInterface {
   errors: FormState<UrlGraphql>['errors'];
   register: UseFormRegister<UrlGraphql>;
-  urlinput?: string;
 }
 
-const UrlSection = ({ register, errors, urlinput }: UrlFormInterface) => {
+const UrlSection = ({ register, errors }: UrlFormInterface) => {
+  const router = useRouter();
   const t = useTranslations('GraphQLClient');
   const tToast = useTranslations('ToastMessages');
   const urlErrorMessage = useMemo(() => tToast('general.urlNotProvided'), [tToast]);
   const sdlErrorMessage = useMemo(() => tToast('general.sdlNotProvided'), [tToast]);
-  const { url, sdlUrl } = useAppSelector(selectAll);
+  const { url, sdlUrl, headers, query } = useAppSelector(selectAll);
   const dispatch = useAppDispatch();
 
   const changeUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setUrl(e.target.value));
+    router.push(setBrowserUrl(url, query, headers));
   };
 
   useEffect(() => {
@@ -45,8 +48,8 @@ const UrlSection = ({ register, errors, urlinput }: UrlFormInterface) => {
         size="small"
         {...register('endpoint', {
           required: true,
-          value: url || urlinput,
-          onChange: changeUrl,
+          value: url,
+          onBlur: changeUrl,
         })}
       />
       <TextField
@@ -55,7 +58,10 @@ const UrlSection = ({ register, errors, urlinput }: UrlFormInterface) => {
         variant="outlined"
         value={sdlUrl || url + '?sdl'}
         size="small"
-        {...register('sdl', { required: true, onChange: (e) => dispatch(setSdlUrl(e.target.value)) })}
+        {...register('sdl', {
+          required: true,
+          onChange: (e) => dispatch(setSdlUrl(e.target.value)),
+        })}
       />
     </div>
   );

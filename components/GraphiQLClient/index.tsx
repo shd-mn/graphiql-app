@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Paper, Tab, Tabs } from '@mui/material';
 import CustomTabPanel from '../UI/CustomTabPanel';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { selectAll, setQuery, setUrl } from '@/redux/features/graphiqlSlice';
+import { selectAll, setAppLoaded, setQuery, setUrl } from '@/redux/features/graphiqlSlice';
 import { setIsLoading, setResponse } from '@/redux/features/mainSlice';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
@@ -35,14 +35,24 @@ interface GraphiQLClientProps {
 }
 
 const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientProps) => {
-  const { query, variables, url, headers } = useAppSelector(selectAll);
+  const { query, variables, url, headers, appLoaded } = useAppSelector(selectAll);
   const gqlFetcher = useMemo(() => createGraphiQLFetcher({ url }), [url]);
   const [value, setValue] = React.useState(0);
   const router = useRouter();
   const dispatch = useAppDispatch();
-  setTimeout(() => dispatch(setUrl(urlinput || url)));
+
   const t = useTranslations('GraphQLClient');
   const tToast = useTranslations('ToastMessages');
+
+  if (!appLoaded) {
+    if (urlinput) {
+      dispatch(setUrl(urlinput));
+    }
+    if (queryinput) {
+      dispatch(setQuery(queryinput.slice(1, -1)));
+    }
+    dispatch(setAppLoaded());
+  }
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -111,11 +121,11 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
   });
 
   return (
-    <GraphiQLProvider fetcher={gqlFetcher} query={!query ? (queryinput ? queryinput.slice(1, -1) : '') : undefined}>
+    <GraphiQLProvider fetcher={gqlFetcher} query={query ?? ''}>
       <div className="graphiql-container flex h-full max-h-[70vh] flex-col">
         <section className="padding-x flex h-full flex-grow flex-col overflow-hidden pt-3">
           <form>
-            <UrlSection urlinput={urlinput} errors={errors} register={register} />
+            <UrlSection errors={errors} register={register} />
           </form>
           <Paper className="mb-2 flex flex-grow flex-col overflow-hidden" elevation={2}>
             <ResizableGroup autoSaveId="graphql" direction="horizontal">
