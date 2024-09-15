@@ -2,10 +2,12 @@
 
 import { TextField } from '@mui/material';
 import { selectAll, setSdlUrl, setUrl } from '@/redux/features/graphiqlSlice';
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { FormState, UseFormRegister } from 'react-hook-form';
 import { UrlGraphql } from '@/types/url-graphql.types';
+import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 
 interface UrlFormInterface {
   errors: FormState<UrlGraphql>['errors'];
@@ -14,6 +16,9 @@ interface UrlFormInterface {
 }
 
 const UrlSection = ({ register, errors, urlinput }: UrlFormInterface) => {
+  const tToast = useTranslations('ToastMessages');
+  const urlErrorMessage = useMemo(() => tToast('general.urlNotProvided'), [tToast]);
+  const sdlErrorMessage = useMemo(() => tToast('general.sdlNotProvided'), [tToast]);
   const { url, sdlUrl } = useAppSelector(selectAll);
   const dispatch = useAppDispatch();
 
@@ -21,28 +26,35 @@ const UrlSection = ({ register, errors, urlinput }: UrlFormInterface) => {
     dispatch(setUrl(e.target.value));
   };
 
+  useEffect(() => {
+    if (errors.endpoint?.type === 'required') {
+      toast.error(urlErrorMessage);
+    } else if (errors.sdl?.type === 'required') {
+      toast.error(sdlErrorMessage);
+    }
+  }, [errors.endpoint, errors.sdl, urlErrorMessage, sdlErrorMessage]);
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="mb-3 flex flex-col gap-3">
       <TextField
         error={!!errors.endpoint}
-        helperText={errors.endpoint ? errors.endpoint.message : ' '}
         id="endpoint"
         label="Endpoint"
         variant="outlined"
         size="small"
         {...register('endpoint', {
+          required: true,
           value: url || urlinput,
           onChange: changeUrl,
         })}
       />
       <TextField
         error={!!errors.sdl}
-        helperText={errors.sdl ? errors.sdl.message : ' '}
         label="SDL"
         variant="outlined"
         value={sdlUrl || url + '?sdl'}
         size="small"
-        {...register('sdl', { onChange: (e) => dispatch(setSdlUrl(e.target.value)) })}
+        {...register('sdl', { required: true, onChange: (e) => dispatch(setSdlUrl(e.target.value)) })}
       />
     </div>
   );

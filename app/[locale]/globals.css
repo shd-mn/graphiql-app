@@ -8,25 +8,10 @@
   }
 }
 
-::-webkit-scrollbar {
-  width: 15px;
-}
-
 * {
   scrollbar-width: thin;
 }
 
-.gql div[role='separator'] {
-  z-index: 10000;
-}
-
-.gql div[data-panel-id='gql-panel'] {
-  overflow: auto !important;
-}
-
-.gql .graphiql-editor .CodeMirror {
-  position: unset;
-  height: auto;
-  /*overflow: unset;*/
-  /*display: contents;*/
+::-webkit-scrollbar {
+  width: 15px;
 }

@@ -41,7 +41,7 @@ const GraphiqlHeader = ({ headersinput }: GraphiqlHeaderProps) => {
   };
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-grow flex-col overflow-auto p-4">
       <form className="flex flex-col gap-2">
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2">

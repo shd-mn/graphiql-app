@@ -10,7 +10,11 @@ function VariablesSection() {
   if (editor && state) {
     setTimeout(() => dispatch(setVariables(state[0])));
   }
-  return <VariableEditor />;
+  return (
+    <div className="flex h-32 w-full flex-col">
+      <VariableEditor />
+    </div>
+  );
 }
 
 export default VariablesSection;
