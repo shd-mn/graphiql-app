@@ -19,6 +19,8 @@ export default defineConfig({
         '**/.eslintrc.cjs',
         'vitest.config.mts',
         'next.config.mjs',
+        'postcss.config.mjs',
+        'tailwind.config.ts',
         'next-env.d.ts',
         '**/custom-pattern/**',
         ...coverageConfigDefaults.exclude,

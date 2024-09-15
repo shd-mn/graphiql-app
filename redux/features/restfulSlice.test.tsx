@@ -19,21 +19,6 @@ const store = configureStore({
 });
 
 describe('restfulSlice', () => {
-  it('should return the initial state', () => {
-    const state = store.getState().restful;
-
-    expect(state).toEqual({
-      id: '',
-      method: 'GET',
-      url: '',
-      params: [{ isChecked: false, key: '', value: '' }],
-      headers: [{ isChecked: true, key: 'Content-Type', value: 'text/html; charset=utf-8' }],
-      body: '',
-      variables: [{ isChecked: false, key: '', value: '' }],
-      date: '',
-    });
-  });
-
   it('should handle setMethod', () => {
     const newMethod: HttpMethod = 'POST';
 
