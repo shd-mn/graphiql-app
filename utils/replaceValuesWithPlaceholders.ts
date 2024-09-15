@@ -1,12 +1,21 @@
-import { ApiRequest } from '@/types/api.types';
+import { RequestFormTypes } from '@/types/api.types';
+import { toast } from 'sonner';
 
-export function replaceValuesWithPlaceholders(obj: ApiRequest): ApiRequest {
-  let jsonString = JSON.stringify(obj);
+export function replaceValuesWithPlaceholders(obj: RequestFormTypes): RequestFormTypes {
+  const { variables, ...rest } = obj;
+  let jsonString = JSON.stringify(rest);
 
-  obj.variables.forEach((variable) => {
-    const regex = new RegExp(variable.value.replace(/[-\\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
-    jsonString = jsonString.replace(regex, `{{${variable.key}}}`);
+  variables.forEach((variable) => {
+    if (variable.key && variable.value) {
+      const regex = new RegExp(variable.value.replace(/[-\\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g');
+      jsonString = jsonString.replace(regex, `{{${variable.key}}}`);
+    }
   });
 
-  return JSON.parse(jsonString) as ApiRequest;
+  try {
+    return { ...JSON.parse(jsonString), variables } as RequestFormTypes;
+  } catch (error) {
+    toast.error(`JSON parse error: ${error}`);
+    return obj;
+  }
 }
