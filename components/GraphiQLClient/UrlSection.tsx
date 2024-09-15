@@ -16,6 +16,7 @@ interface UrlFormInterface {
 }
 
 const UrlSection = ({ register, errors, urlinput }: UrlFormInterface) => {
+  const t = useTranslations('GraphQLClient');
   const tToast = useTranslations('ToastMessages');
   const urlErrorMessage = useMemo(() => tToast('general.urlNotProvided'), [tToast]);
   const sdlErrorMessage = useMemo(() => tToast('general.sdlNotProvided'), [tToast]);
@@ -39,7 +40,7 @@ const UrlSection = ({ register, errors, urlinput }: UrlFormInterface) => {
       <TextField
         error={!!errors.endpoint}
         id="endpoint"
-        label="Endpoint"
+        label={t('endpoint')}
         variant="outlined"
         size="small"
         {...register('endpoint', {
@@ -50,7 +51,7 @@ const UrlSection = ({ register, errors, urlinput }: UrlFormInterface) => {
       />
       <TextField
         error={!!errors.sdl}
-        label="SDL"
+        label={t('sdl')}
         variant="outlined"
         value={sdlUrl || url + '?sdl'}
         size="small"

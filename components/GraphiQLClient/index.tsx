@@ -41,6 +41,7 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
   const router = useRouter();
   const dispatch = useAppDispatch();
   setTimeout(() => dispatch(setUrl(urlinput || url)));
+  const t = useTranslations('GraphQLClient');
   const tToast = useTranslations('ToastMessages');
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -130,13 +131,13 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
                       className: 'bg-orange-500 flex px-4 mb-0 h-[2px] bottom-2',
                     }}
                   >
-                    <Tab label="Query" {...a11yProps(0)} className="mx-4 min-w-max px-0 py-0 capitalize" />
-                    <Tab label="Headers" {...a11yProps(1)} className="me-4 min-w-max px-0 py-0 capitalize" />
+                    <Tab label={t('query')} {...a11yProps(0)} className="mx-4 min-w-max px-0 py-0 capitalize" />
+                    <Tab label={t('headers')} {...a11yProps(1)} className="me-4 min-w-max px-0 py-0 capitalize" />
                   </Tabs>
                   <Box>
                     {value === 0 && <PrettifyButton />}
                     <Button onClick={handleSubmit(sendQuery)} type="submit" variant="contained" className="me-4 h-8">
-                      Send
+                      {t('send')}
                     </Button>
                   </Box>
                 </Box>
@@ -152,7 +153,7 @@ const GraphiQLClient = ({ queryinput, headersinput, urlinput }: GraphiQLClientPr
                       id="panel1-header"
                       className="m-0 h-8 min-h-0 px-2 py-1"
                     >
-                      Variables
+                      {t('variables')}
                     </AccordionSummary>
                     <AccordionDetails className="flex h-full flex-grow p-0">
                       <VariablesSection />

@@ -17,7 +17,8 @@
     },
     "general": {
       "urlNotProvided": "URL не указан. Пожалуйста, укажите URL конечной точки.",
-      "prettifyError": "Не удалось отформатировать запрос."
+      "prettifyError": "Не удалось отформатировать запрос.",
+      "sdlNotProvided": "SDL не указан. Пожалуйста, укажите URL для SDL."
     }
   },
   "Header": {
@@ -111,5 +112,17 @@
     "title": "Наша Команда",
     "teamLead": "Руководитель команды",
     "developer": "Разработчик"
+  },
+  "GraphQLClient": {
+    "query": "Запрос",
+    "headers": "Заголовки",
+    "variables": "Переменные",
+    "send": "Отправить",
+    "prettify": "Форматировать",
+    "setHeaders": "Установить заголовки",
+    "headerKey": "Ключ заголовка",
+    "headerValue": "Значение заголовка",
+    "endpoint": "Конечная точка",
+    "sdl": "SDL"
   }
 }

@@ -16,7 +16,7 @@ const Documentation = () => {
             id="documentation"
             order={2}
             className="flex flex-col"
-            minSizePercentage={20}
+            minSizePercentage={10}
             defaultSizePercentage={40}
           >
             <div className="graphiql-container overflow-hidden">

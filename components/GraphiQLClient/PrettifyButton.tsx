@@ -7,6 +7,7 @@ import { AutoFixHigh } from '@mui/icons-material';
 function PrettifyButton() {
   const editor = useQueryEditor();
   const prettifyEditors = usePrettifyEditors();
+  const t = useTranslations('GraphQLClient');
   const tToast = useTranslations('ToastMessages');
 
   const handlePrettifyClick = () => {
@@ -27,7 +28,7 @@ function PrettifyButton() {
       startIcon={<AutoFixHigh />}
       className="mr-2 h-8"
     >
-      Prettify
+      {t('prettify')}
     </Button>
   );
 }
