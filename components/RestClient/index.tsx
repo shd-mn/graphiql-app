@@ -339,7 +339,6 @@ function RestForm() {
                   render={({ field }) => (
                     <Editor
                       language={bodyFormat === 'json' ? 'json' : 'plaintext'}
-                      theme="vs-dark"
                       value={bodyValue}
                       onChange={(value) => field.onChange(value)}
                       onMount={(editor) => {
