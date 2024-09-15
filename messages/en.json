@@ -1,0 +1,130 @@
+{
+  "Language": {
+    "label": "Change language",
+    "locale": "EN"
+  },
+  "ToastMessages": {
+    "auth": {
+      "successSignIn": "You have successfully signed in.",
+      "errorSignIn": "Failed to sign in. Please try again.",
+      "userNotFound": "Please check your email and password or create an account.",
+      "confirmEmail": "Please confirm your email address",
+      "successSignUp": "You have successfully signed up.",
+      "errorSignUp": "Failed to sign up. Please try again.",
+      "userAlreadyExist": "User already exists. Please sign in.",
+      "signOutSuccess": "You have signed out.",
+      "errorSignOut": "Failed to sign out. Please try again."
+    },
+    "general": {
+      "urlNotProvided": "URL not provided. Please provide endpoint URL.",
+      "prettifyError": "Failed to prettify query.",
+      "sdlNotProvided": "SDL not provided. Please provide SDL URL."
+    }
+  },
+  "Header": {
+    "home": "Home",
+    "languageLabel": "English",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out"
+  },
+  "HomePage": {
+    "title": "REST & GraphiQL",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "welcome": "Welcome!",
+    "welcomeBack": "Welcome Back, {name}!",
+    "restClient": "REST Client",
+    "graphiqlClient": "GraphiQL Client",
+    "history": "History",
+    "subtitle": "Light-weight versions of Postman and GraphiQL combined in one app",
+    "description": "The application combines lightweight versions of Postman and GraphiQL into a unified API testing platform, offering method selection, headers management, request editing, and response handling. Key features include Firebase-based user authentication, a history page to track and restore past queries, and multi-language support. Errors such as unhandled rejections and network timeouts are presented in a user-friendly format, while valid HTTP error codes (4xx/5xx) appear in the response section. This project is the final task of the ",
+    "rsSchoolLink": "RS School React course."
+  },
+  "SignInPage": {
+    "title": "Welcome Back",
+    "noAccount": "Don't have an account yet?",
+    "signUpLink": "Sign up here",
+    "email": "Email",
+    "password": "Password",
+    "signInButton": "Sign in"
+  },
+  "SignUpPage": {
+    "title": "Create Account",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign in here",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "signUpButton": "Sign up"
+  },
+  "RestClient": {
+    "send": "SEND",
+    "add": "Add",
+    "params": "Params",
+    "headers": "Headers",
+    "body": "Body",
+    "variables": "Variables",
+    "queryParams": "Query Params",
+    "prettify": "Prettify",
+    "json": "JSON",
+    "text": "Text",
+    "hide": "Hide",
+    "show": "Show"
+  },
+  "Response": {
+    "response": "Response",
+    "body": "Body",
+    "headers": "Headers",
+    "key": "Key",
+    "value": "Value",
+    "hitSendAlt": "hit send response",
+    "clickToSend": "Click To Send a response",
+    "couldNotSendRequest": "Could not send request"
+  },
+  "HistoryPage": {
+    "emptyRequestsAlt": "empty requests",
+    "noRequests": "You haven't executed any requests",
+    "tryFollowing": "It's empty here. Try:",
+    "restClient": "REST Client",
+    "graphiqlClient": "GraphiQL Client",
+    "delete": "Delete",
+    "dense": "Compact",
+    "method": "Method",
+    "url": "URL",
+    "status": "Status",
+    "date": "Date",
+    "rowsPerPage": "Rows per page:",
+    "of": "of",
+    "rows": "Rows:",
+    "selected": "selected",
+    "requestsHistory": "Requests History"
+  },
+  "NotFound": {
+    "title": "404 Page Not Found",
+    "backToHome": "Back to Home"
+  },
+  "FeaturesSection": {
+    "feature1": "Efficient API testing with customizable methods, headers, and response analysis.",
+    "feature2": "Seamless query editing, documentation exploration, and response inspection.",
+    "feature3": "Track, restore, and manage previously executed API requests with ease."
+  },
+  "TeamSection": {
+    "title": "Our Team",
+    "teamLead": "Team Lead",
+    "developer": "Developer"
+  },
+  "GraphQLClient": {
+    "query": "Query",
+    "headers": "Headers",
+    "variables": "Variables",
+    "send": "Send",
+    "prettify": "Prettify",
+    "setHeaders": "Set Headers",
+    "headerKey": "Header Key",
+    "headerValue": "Header Value",
+    "endpoint": "Endpoint",
+    "sdl": "SDL"
+  }
+}
