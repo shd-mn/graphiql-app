@@ -30,9 +30,43 @@ vi.mock('react-firebase-hooks/auth', () => ({
   useAuthState: vi.fn(),
 }));
 
-vi.mock('@/firebase', () => ({
-  auth: {},
-  logout: vi.fn().mockResolvedValue({}),
+vi.mock('@/firebase', () => {
+  const original = vi.importActual<typeof import('@/firebase')>('@/firebase');
+  return {
+    ...original,
+    auth: {},
+    logout: vi.fn().mockResolvedValue({}),
+  };
+});
+
+vi.mock('firebase/app', () => ({
+  initializeApp: vi.fn(),
+}));
+
+vi.mock('firebase/auth', () => ({
+  getAuth: vi.fn(() => ({
+    currentUser: {
+      getIdTokenResult: vi.fn(() =>
+        Promise.resolve({
+          authTime: '2023-01-01T00:00:00Z',
+          issuedAtTime: '2023-01-01T00:00:00Z',
+          expirationTime: new Date(Date.now() + 3600 * 1000).toISOString(),
+        }),
+      ),
+    },
+    onIdTokenChanged: vi.fn((callback) => {
+      callback({
+        getIdTokenResult: vi.fn(() =>
+          Promise.resolve({
+            authTime: '2023-01-01T00:00:00Z',
+            issuedAtTime: '2023-01-01T00:00:00Z',
+            expirationTime: new Date(Date.now() + 3600 * 1000).toISOString(),
+          }),
+        ),
+      });
+    }),
+  })),
+  signOut: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock('sonner', () => ({
