@@ -69,7 +69,9 @@
     "queryParams": "Query Params",
     "prettify": "Prettify",
     "json": "JSON",
-    "text": "Text"
+    "text": "Text",
+    "hide": "Hide",
+    "show": "Show"
   },
   "Response": {
     "response": "Response",

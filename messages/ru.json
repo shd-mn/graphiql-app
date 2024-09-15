@@ -69,7 +69,9 @@
     "queryParams": "Параметры запроса",
     "prettify": "Форматировать",
     "json": "JSON",
-    "text": "Текст"
+    "text": "Текст",
+    "hide": "Скрыть",
+    "show": "Показать"
   },
   "Response": {
     "response": "Ответ",
