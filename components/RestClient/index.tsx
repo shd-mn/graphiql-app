@@ -30,15 +30,18 @@ import { a11yProps } from '@/utils/a11yProps';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { AddCircleOutline, AutoFixHigh } from '@mui/icons-material';
+import { AddCircleOutline, AutoFixHigh, Visibility, VisibilityOff } from '@mui/icons-material';
 import type { editor } from 'monaco-editor';
 import { createQueryString } from '@/utils/createQueryString';
-import { replaceVariables } from '@/utils/replaceVariables';
 import type { RequestFormTypes, ApiRequest } from '@/types/api.types';
+
+import { replaceVariables } from '@/utils/replaceVariables';
+import { replaceValuesWithPlaceholders } from '@/utils/replaceValuesWithPlaceholders';
 
 function RestForm() {
   const [activeTab, setActiveTab] = useState(0);
   const [bodyFormat, setBodyFormat] = useState<'json' | 'plaintext'>('json');
+  const [showVariables, setShowVariables] = useState(false);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const t = useTranslations('RestClient');
   const tToast = useTranslations('ToastMessages');
@@ -47,6 +50,7 @@ function RestForm() {
   const { storedValue: requests, setLocalStorageValue } = useLocalStorage<ApiRequest[]>('requests', []);
   const dispatch = useAppDispatch();
   const { method, url, params, headers, body, variables } = useAppSelector(selectAll);
+
   const router = useRouter();
 
   const form = useForm({
@@ -162,6 +166,14 @@ function RestForm() {
     }
   };
 
+  const handleShowHideVariables = () => {
+    setShowVariables(!showVariables);
+    const updatedFormData = showVariables
+      ? replaceValuesWithPlaceholders(form.getValues())
+      : replaceVariables(form.getValues());
+    form.reset(updatedFormData);
+  };
+
   useEffect(() => {
     if (errors.url?.type === 'required') {
       toast.error(urlErrorMessage);
@@ -169,6 +181,8 @@ function RestForm() {
   }, [errors.url, urlErrorMessage]);
 
   const selectedColor = methods.find((item) => item.name === watch('method'))?.color;
+
+  const bodyValue = watch('body');
 
   return (
     <section className="padding-x h-full max-h-[50vh] pt-3">
@@ -233,7 +247,7 @@ function RestForm() {
               <Box className="mb-1 flex items-center justify-between px-5 pt-2">
                 <Typography className="text-sm">{t('queryParams')}</Typography>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   size="small"
                   className="h-8"
                   startIcon={<AddCircleOutline />}
@@ -246,28 +260,11 @@ function RestForm() {
               <InputTable fields={paramsFields} inputName="params" remove={removeParams} />
             </CustomTabPanel>
 
-            <CustomTabPanel value={activeTab} index={3} className="flex flex-grow-0 flex-col overflow-hidden">
-              <Box className="mb-1 flex items-center justify-between px-5 pt-2">
-                <Typography className="text-sm">{t('variables')}</Typography>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  className="h-8"
-                  startIcon={<AddCircleOutline />}
-                  onClick={handleAddInput}
-                >
-                  {t('add')}
-                </Button>
-              </Box>
-
-              <InputTable fields={variablesFields} inputName="variables" remove={removeVariables} />
-            </CustomTabPanel>
-
             <CustomTabPanel value={activeTab} index={1} className="flex flex-grow-0 flex-col overflow-hidden">
               <Box className="mb-1 flex items-center justify-between px-5 pt-2">
                 <Typography className="text-sm">{t('headers')}</Typography>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   size="small"
                   className="h-8"
                   startIcon={<AddCircleOutline />}
@@ -277,6 +274,34 @@ function RestForm() {
                 </Button>
               </Box>
               <InputTable fields={headersFields} inputName="headers" remove={removeHeaders} />
+            </CustomTabPanel>
+
+            <CustomTabPanel value={activeTab} index={3} className="flex flex-grow-0 flex-col overflow-hidden">
+              <Box className="mb-1 flex items-center justify-between px-5 pt-2">
+                <Typography className="text-sm">{t('variables')}</Typography>
+                <Box>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    className="mr-2 h-8"
+                    startIcon={showVariables ? <VisibilityOff /> : <Visibility />}
+                    onClick={handleShowHideVariables}
+                  >
+                    {showVariables ? 'hide' : 'show'}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    className="h-8"
+                    startIcon={<AddCircleOutline />}
+                    onClick={handleAddInput}
+                  >
+                    {t('add')}
+                  </Button>
+                </Box>
+              </Box>
+
+              <InputTable fields={variablesFields} inputName="variables" remove={removeVariables} />
             </CustomTabPanel>
 
             <CustomTabPanel value={activeTab} index={2} className="flex flex-grow flex-col overflow-hidden">
@@ -297,7 +322,7 @@ function RestForm() {
                 </ToggleButtonGroup>
                 {bodyFormat === 'json' && (
                   <Button
-                    variant="outlined"
+                    variant="contained"
                     size="small"
                     className="h-8"
                     startIcon={<AutoFixHigh />}
@@ -315,6 +340,7 @@ function RestForm() {
                     <Editor
                       language={bodyFormat === 'json' ? 'json' : 'plaintext'}
                       theme="vs-dark"
+                      value={bodyValue}
                       onChange={(value) => field.onChange(value)}
                       onMount={(editor) => {
                         editorRef.current = editor;
