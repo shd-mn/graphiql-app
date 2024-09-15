@@ -7,6 +7,7 @@ export interface GraphiqlSliceState {
   url: string;
   sdlUrl: string;
   response: string;
+  appLoaded: boolean;
 }
 
 export interface GQLHeader {
@@ -21,6 +22,7 @@ const initialState: GraphiqlSliceState = {
   url: '',
   sdlUrl: '',
   response: '',
+  appLoaded: false,
 };
 
 export const graphiqlSlice = createSlice({
@@ -42,6 +44,9 @@ export const graphiqlSlice = createSlice({
     setSdlUrl: create.reducer((state, action: PayloadAction<string>) => {
       state.sdlUrl = action.payload;
     }),
+    setAppLoaded: create.reducer((state) => {
+      state.appLoaded = true;
+    }),
   }),
 
   selectors: {
@@ -50,6 +55,6 @@ export const graphiqlSlice = createSlice({
   },
 });
 
-export const { setQuery, setVariables, setHeaders, setUrl, setSdlUrl } = graphiqlSlice.actions;
+export const { setQuery, setVariables, setHeaders, setUrl, setSdlUrl, setAppLoaded } = graphiqlSlice.actions;
 
 export const { selectAll, selectHeaders } = graphiqlSlice.selectors;
